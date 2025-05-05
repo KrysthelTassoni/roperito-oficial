@@ -1,8 +1,8 @@
 import { Navbar, Nav, Button, Container, Form } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../../context/AuthContext";
 import { FaUser } from "react-icons/fa";
-import CustomButton from "./CustomButton/CustomButton";
+import CustomButton from "../CustomButton/CustomButton";
 import { BiLogOut } from "react-icons/bi";
 
 const Header = () => {
@@ -17,13 +17,17 @@ const Header = () => {
   return (
     <Navbar expand="lg" className="bg-white shadow-sm py-3">
       <Container>
-        <Navbar.Brand as={Link} to="/" className="d-flex align-items-center align-self-center">
+        <Navbar.Brand
+          as={Link}
+          to="/"
+          className="d-flex align-items-center align-self-center"
+        >
           <img
             src="/logo2.PNG"
             alt="Hanger"
             height="48"
             className="me-2"
-            style={{ marginTop: '-2px' }}
+            style={{ marginTop: "-2px" }}
           />
           <span className="section-title">Roperito</span>
         </Navbar.Brand>

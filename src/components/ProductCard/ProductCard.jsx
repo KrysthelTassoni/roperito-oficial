@@ -1,13 +1,13 @@
 import { Card, Button, Dropdown, ButtonGroup } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import { FaEdit, FaTrash, FaStar, FaHeart, FaRegHeart } from "react-icons/fa";
-import { defaultImages } from "../config/images";
-import Desplegable from "./Desplegable/Desplegable";
-import FavoriteButton from "./CustomButton/FavoriteButton/FavoriteButton";
-import CustomButton from "./CustomButton/CustomButton";
-import { useAuth } from "../context/AuthContext";
+import { defaultImages } from "../../config/images";
+import Desplegable from "../Desplegable/Desplegable";
+import FavoriteButton from "../CustomButton/FavoriteButton/FavoriteButton";
+import CustomButton from "../CustomButton/CustomButton";
+import { useAuth } from "../../context/AuthContext";
 import { useState } from "react";
-import CustomModal from "./CustomModal/CustomModal";
+import CustomModal from "../CustomModal/CustomModal";
 
 const ProductCard = ({ product, myProducts = false }) => {
   const { isAuthenticated } = useAuth();
@@ -43,12 +43,12 @@ const ProductCard = ({ product, myProducts = false }) => {
     if (myProducts && product.rating) {
       return {
         rating: product.rating.average,
-        total: product.rating.total
+        total: product.rating.total,
       };
     }
     return {
       rating: product.seller?.rating || 0,
-      total: product.seller?.totalRatings || 0
+      total: product.seller?.totalRatings || 0,
     };
   };
 

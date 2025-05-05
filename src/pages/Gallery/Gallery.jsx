@@ -1,17 +1,18 @@
 import { Container, Row, Col } from "react-bootstrap";
-import ProductCard from "../../components/ProductCard";
-import SearchBar from "../../components/SearchBar";
+import ProductCard from "../../components/ProductCard/ProductCard";
+import SearchBar from "../../components/SearchBar/SearchBar";
 import FilterSelect from "../../components/FilterSelect/FilterSelect";
 import { AllProducts } from "../../config/data";
 import "./Gallery.css";
 import { useProducts } from "../../context/ProductContext";
 
 // Extraer categorías únicas de los productos
-const CATEGORY_OPTIONS = [...new Set(AllProducts.map(product => product.category))]
-  .map(category => ({
-    value: category,
-    label: category.charAt(0).toUpperCase() + category.slice(1)
-  }));
+const CATEGORY_OPTIONS = [
+  ...new Set(AllProducts.map((product) => product.category)),
+].map((category) => ({
+  value: category,
+  label: category.charAt(0).toUpperCase() + category.slice(1),
+}));
 
 const SIZE_OPTIONS = [
   { value: "XS", label: "XS" },

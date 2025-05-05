@@ -10,7 +10,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import CreateProduct from "../pages/CreateProduct/CreateProduct";
 import Gallery from "../pages/Gallery/Gallery";
 import ProductDetail from "../pages/ProductDetail/ProductDetail";
-import HowItWorks from "../pages/HowItWorks";
+import HowItWorks from "../pages/HowItWorks/HowItWorks";
 import Home from "../pages/Home/Home";
 import Login from "../pages/Auth/Login";
 import Register from "../pages/Auth/Register";
@@ -18,7 +18,7 @@ import Profile from "../pages/Profile/Profile";
 import PrivateRoute from "../config/PrivateRoute";
 import { useAuth } from "../context/AuthContext";
 import Footer from "../components/Footer/Footer";
-import Header from "../components/Header";
+import Header from "../components/Header/Header";
 import NotFound from "../pages/NotFound/NotFound";
 
 function MisRutas() {

@@ -1,7 +1,7 @@
 import { Container, Row, Col, Card, Button, Nav, Tab } from "react-bootstrap";
 import { FaUser, FaStar, FaFolderMinus } from "react-icons/fa";
 import { useAuth } from "../../context/AuthContext";
-import ProductCard from "../../components/ProductCard";
+import ProductCard from "../../components/ProductCard/ProductCard";
 import { useProducts } from "../../context/ProductContext";
 import CustomAvatar from "../../components/CustomAvatar/CustomAvatar";
 import "./Profile.css";

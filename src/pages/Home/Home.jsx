@@ -1,12 +1,13 @@
 import { Container, Row, Col } from "react-bootstrap";
-import HeroSection from "../../components/HeroSection";
-import ProductCard from "../../components/ProductCard";
-import SearchBar from "../../components/SearchBar";
+import HeroSection from "../../components/HeroSection/HeroSection";
+import ProductCard from "../../components/ProductCard/ProductCard";
+import SearchBar from "../../components/SearchBar/SearchBar";
 import "./Home.css";
 import { useProducts } from "../../context/ProductContext";
 
 const Home = () => {
-  const { products, loading, error, filters, updateFilters, isSearching } = useProducts();
+  const { products, loading, error, filters, updateFilters, isSearching } =
+    useProducts();
 
   const handleSearchChange = (e) => {
     updateFilters({ search: e.target.value });
@@ -38,15 +39,14 @@ const Home = () => {
 
       <Container className="py-5">
         <h2 className="text-center mb-4">
-          {isSearching ? "Resultados de la búsqueda" : "Publicaciones recientes"}
+          {isSearching
+            ? "Resultados de la búsqueda"
+            : "Publicaciones recientes"}
         </h2>
 
         <Row className="mb-4">
           <Col md={6} className="mx-auto">
-            <SearchBar
-              value={filters.search}
-              onChange={handleSearchChange}
-            />
+            <SearchBar value={filters.search} onChange={handleSearchChange} />
           </Col>
         </Row>
 
