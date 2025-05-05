@@ -1,0 +1,29 @@
+.profile-contain {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+}
+
+
+/* Estilo para el Nav.Link no activo */
+
+.nav-link:not(.active) {
+    color: var(--primary-color);
+}
+
+.div-publish {
+    display: flex;
+    justify-content: end;
+    margin-top: 20px;
+    margin-right: 15px;
+}
+
+
+/* Estilo para centrar el contenido del botón de crear publicación */
+
+.div-publish button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}

@@ -1,0 +1,12 @@
+.filter-select {
+    border-radius: 10px;
+    border: 2px solid var(--border-color);
+    padding: 0.75rem 1rem;
+    transition: var(--transition);
+    background-color: white;
+}
+
+.filter-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.25rem rgba(124, 77, 255, 0.15);
+}

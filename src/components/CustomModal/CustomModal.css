@@ -1,0 +1,25 @@
+.custom-modal-content {
+  margin: auto;
+  border-radius: 20px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+  border: none;
+  color: #5e4b8b;
+  width: 40%;
+  align-items: center;
+}
+
+.custom-modal-header,
+.custom-modal-footer {
+  border: none;
+  background-color: transparent;
+  color: var(--primary-color);
+}
+
+.custom-modal-body {
+  font-size: 1.1rem;
+  color: #6a4cad;
+}
+
+.custom-modal-backdrop {
+  background-color: rgba(0, 0, 0, 0.3);
+}

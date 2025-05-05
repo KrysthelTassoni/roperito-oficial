@@ -1,0 +1,93 @@
+.create-product {
+    min-height: 100vh;
+    background: linear-gradient( 135deg, var(--background-primary), var(--background-secondary));
+}
+
+.create-product .close-button {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: transparent;
+    border: none;
+    color: var(--text-dark);
+    padding: 5px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+    transition: all 0.2s ease-in-out;
+    border-radius: 50%;
+}
+
+.create-product .close-button:hover {
+    background-color: rgba(0, 0, 0, 0.1);
+    transform: scale(1.1);
+}
+
+.create-product .card {
+    border: none;
+    border-radius: 15px;
+    box-shadow: var(--box-shadow);
+    background-color: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+}
+
+.create-product .card-body {
+    padding: 2rem;
+}
+
+.create-product h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary-color);
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.create-product .form-label {
+    font-weight: 600;
+    color: var(--text-dark);
+    margin-bottom: 0.5rem;
+}
+
+.create-product .form-control,
+.create-product .form-select {
+    border-radius: 10px;
+    border: 2px solid var(--border-color);
+    padding: 0.75rem 1rem;
+    transition: var(--transition);
+}
+
+.create-product .form-control:focus,
+.create-product .form-select:focus {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.25rem rgba(124, 77, 255, 0.15);
+}
+
+.create-product .btn-primary {
+    background: var(--gradient-primary);
+    border: none;
+    padding: 0.75rem 1.5rem;
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.create-product .btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--box-shadow-hover);
+}
+
+.create-product .form-text {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+}
+
+@media (max-width: 768px) {
+    .create-product .card {
+        margin: 1rem;
+    }
+    .create-product h2 {
+        font-size: 1.75rem;
+    }
+}
