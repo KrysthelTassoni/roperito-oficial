@@ -1,12 +1,76 @@
-# React + Vite
+# Roperito - Tienda de Ropa de Segunda Mano
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-Currently, two official plugins are available:
+¡Hola! Este grupo está conformado por: Bryan R, Cristian T, y Krysthel T. Es un proyecto de frontend para una tienda de ropa de segunda mano. La idea es crear una plataforma donde las personas puedan comprar y vender ropa usada de manera sencilla.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-## Expanding the ESLint configuration
+## Características principales
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+
+-  Explorar productos por categorías
+-  Búsqueda de productos
+-  Perfil de usuario personalizado
+-  Guardar productos favoritos
+- Conecta usuario vendedor con comprador
+
+
+## Tecnologías utilizadas
+
+
+- React.js
+- React Bootstrap para los componentes de UI
+- React Router para la navegación
+- React Icons para los íconos
+- React Hook Form para los formularios
+- React Toastify para las notificaciones
+
+
+## Instalación
+
+
+1. Clona el repositorio:
+
+git clone https://github.com/KrysthelTassoni/roperito-oficial.git
+
+2. Instala las dependencias:
+
+Npm install
+
+3. Inicia el servidor:
+Npm run dev
+
+
+## Credenciales de prueba
+
+
+Para probar la aplicación, puedes usar estas credenciales:
+
+
+- Email: a@gmail.com
+- Contraseña: 123456
+
+
+## Funcionalidades principales
+
+
+### Para compradores:
+- Ver catálogo de productos
+- Filtrar por categorías
+- Guardar favoritos
+- Ver detalles de productos
+- Contactar vendedores
+
+
+### Para vendedores:
+- Publicar productos
+- Gestionar publicaciones
+- Editar perfil
+
+## Notas:
+
+
+- El proyecto usa datos mock mientras no hay backend
+- Las imágenes se guardan temporalmente en el frontend
+- Los favoritos se mantienen en el estado local
+- La autenticación es simulada con Context API
+
