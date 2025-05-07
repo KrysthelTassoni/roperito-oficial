@@ -16,19 +16,21 @@ export const orderService = {
 
     // Crear una nueva orden
     createOrder: async (orderData) => {
+        // orderData debe tener: product_id, seller_id, price, contact_method
         const response = await apiClient.post(API_CONFIG.ENDPOINTS.ORDERS.BASE, orderData);
         return response.data;
     },
 
     // Actualizar el estado de una orden
     updateOrderStatus: async (id, status) => {
-        const response = await apiClient.patch(API_CONFIG.ENDPOINTS.ORDERS.STATUS(id), { status });
+        // status: { status: 'completed' | 'cancelled' | 'pending' }
+        const response = await apiClient.patch(API_CONFIG.ENDPOINTS.ORDERS.UPDATE_STATUS(id), { status });
         return response.data;
     },
 
     // Cancelar una orden
     cancelOrder: async (id) => {
-        const response = await apiClient.patch(API_CONFIG.ENDPOINTS.ORDERS.STATUS(id), { 
+        const response = await apiClient.patch(API_CONFIG.ENDPOINTS.ORDERS.UPDATE_STATUS(id), { 
             status: API_CONFIG.ORDER_STATUS.CANCELLED 
         });
         return response.data;

@@ -8,7 +8,8 @@ export const userService = {
     },
 
     updateProfile: async(updateData) => {
-        const response = await apiClient.put(API_CONFIG.ENDPOINTS.USERS.PROFILE, updateData);
+        // updateData puede tener: phone, city, region, country
+        const response = await apiClient.put(API_CONFIG.ENDPOINTS.USERS.UPDATE_PROFILE, updateData);
         return response.data;
     },
 

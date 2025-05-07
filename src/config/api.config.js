@@ -8,21 +8,25 @@ export const API_CONFIG = {
         PRODUCTS: {
             BASE: '/api/products',
             BY_ID: (id) => `/api/products/${id}`,
+            CREATE: '/api/products',
+            UPDATE: (id) => `/api/products/${id}`,
+            DELETE: (id) => `/api/products/${id}`,
             RATINGS: (id) => `/api/products/${id}/ratings`,
             IMAGES: (id) => `/api/products/${id}/images`,
-            UPDATE_STATUS: (id) => `/api/products/${id}/status`
         },
         USERS: {
             PROFILE: '/api/users/me',
-            ADDRESS: '/api/users/address',
-            RATINGS: '/api/users/ratings'
+            UPDATE_PROFILE: '/api/users/me',
+            RATINGS: '/api/users/ratings',
         },
         RATINGS: {
-            BASE: '/api/ratings'
+            BASE: '/api/ratings',
+            PRODUCT: (id) => `/api/products/${id}/ratings`,
+            USER: '/api/users/ratings',
         },
         FAVORITES: {
             BASE: '/api/favorites',
-            TOGGLE: (id) => `/api/favorites/${id}`
+            TOGGLE: (productId) => `/api/favorites/${productId}`
         },
         METADATA: {
             CATEGORIES: '/api/metadata/categories',
@@ -31,19 +35,15 @@ export const API_CONFIG = {
         ORDERS: {
             BASE: '/api/orders',
             BY_ID: (id) => `/api/orders/${id}`,
-            STATUS: (id) => `/api/orders/${id}/status`,
+            UPDATE_STATUS: (id) => `/api/orders/${id}/status`,
             USER_ORDERS: '/api/users/orders',
-            CHECK_PRODUCT: (id) => `/api/orders/check/${id}`
         }
     },
     STATUS: {
         AVAILABLE: 'disponible',
         SOLD: 'vendido',
-        INACTIVE: 'inactivo'
     },
     ORDER_STATUS: {
         COMPLETED: 'completed',
-        CANCELLED: 'cancelled',
-        PENDING: 'pending'
     }
 };
