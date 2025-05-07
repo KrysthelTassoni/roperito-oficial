@@ -10,3 +10,7 @@ export { favoriteService }
 from './favoriteService';
 export { metadataService }
 from './metadataService';
+export { orderService }
+from './orderService';
+export { productImageService }
+from './productImageService';

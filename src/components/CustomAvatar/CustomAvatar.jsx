@@ -13,6 +13,7 @@ import { MdEmail } from "react-icons/md";
 import FilterSelect from "../FilterSelect/FilterSelect";
 import { REGIONS_CHILE } from "../../config/locations";
 import { userProfile } from "../../config/data";
+import UserRating from "../UserRating/UserRating";
 
 export default function CustomAvatar() {
   const { user } = useAuth();
@@ -57,7 +58,13 @@ export default function CustomAvatar() {
           <FaUser size={25} className="text-primary" />
         </div>
         <div>
-          <h3>{user?.name || defaultUser.name}</h3>
+          <div className="d-flex align-items-center gap-3">
+            <h3>{user?.name || defaultUser.name}</h3>
+            <UserRating 
+              averageRating={user?.rating?.average || 0} 
+              totalRatings={user?.rating?.total || 0} 
+            />
+          </div>
           <p>
             {(user?.city || defaultUser.city) && (user?.region || defaultUser.region)
               ? `${user?.city || defaultUser.city}, ${getRegionLabel(user?.region || defaultUser.region)}, ${user?.country || defaultUser.country}`

@@ -1,6 +1,6 @@
 import { Modal, Button } from "react-bootstrap";
 import React from "react";
-import "./CustomModal.css"; // Asegúrate de importar los estilos
+import "./CustomModal.css";
 import CustomButton from "../CustomButton/CustomButton";
 
 export default function CustomModal({

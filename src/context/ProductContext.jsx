@@ -4,7 +4,17 @@ import { useAuth } from "./AuthContext";
 
 const ProductContext = createContext();
 
-export const ProductProvider = ({ children }) => {
+// Definir el hook como una función nombrada
+function useProducts() {
+  const context = useContext(ProductContext);
+  if (!context) {
+    throw new Error("useProducts must be used within a ProductProvider");
+  }
+  return context;
+}
+
+// Exportar el Provider como una función nombrada
+function ProductProvider({ children }) {
   const { user } = useAuth();
   const [products] = useState(AllProducts);
   const [searchResults, setSearchResults] = useState(null);
@@ -15,6 +25,7 @@ export const ProductProvider = ({ children }) => {
     size: "",
     price: "",
     search: "",
+    is_active: true
   });
 
   // Actualizar favoritos cuando cambia el usuario
@@ -26,38 +37,33 @@ export const ProductProvider = ({ children }) => {
   const isInPriceRange = (price, range) => {
     if (!range) return true;
     const [min, max] = range.split("-").map(Number);
-    if (range === "100+") return price >= 100;
+    if (range === "100000+") return price >= 100000;
     return price >= min && price <= (max || Infinity);
   };
 
   // Función para filtrar productos
   const filterProducts = (productsToFilter) => {
     return productsToFilter.filter((product) => {
-      const matchesCategory =
-        !filters.category || product.category === filters.category;
+      const matchesCategory = !filters.category || product.category === filters.category;
       const matchesSize = !filters.size || product.size === filters.size;
-      const matchesPrice =
-        !filters.price || isInPriceRange(product.price, filters.price);
-      const matchesSearch =
-        !filters.search ||
-        product.title.toLowerCase().includes(filters.search.toLowerCase());
+      const matchesPrice = !filters.price || isInPriceRange(product.price, filters.price);
+      const matchesSearch = !filters.search || 
+        product.title.toLowerCase().includes(filters.search.toLowerCase()) ||
+        product.description.toLowerCase().includes(filters.search.toLowerCase());
+      const matchesActive = product.is_active !== false; // Solo filtrar si es explícitamente false
 
-      return matchesCategory && matchesSize && matchesPrice && matchesSearch;
+      return matchesCategory && matchesSize && matchesPrice && matchesSearch && matchesActive;
     });
   };
 
   // Efecto para manejar la búsqueda y filtros
   useEffect(() => {
     const filterTimer = setTimeout(() => {
-      if (filters.search || filters.category || filters.size || filters.price) {
-        setLoading(true);
-        const filteredResults = filterProducts(products);
-        setSearchResults(filteredResults);
-        setLoading(false);
-      } else {
-        setSearchResults(null);
-      }
-    }, 300); // Debounce de 300ms
+      setLoading(true);
+      const filteredResults = filterProducts(products);
+      setSearchResults(filteredResults);
+      setLoading(false);
+    }, 300);
 
     return () => clearTimeout(filterTimer);
   }, [filters, products]);
@@ -93,12 +99,7 @@ export const ProductProvider = ({ children }) => {
       {children}
     </ProductContext.Provider>
   );
-};
+}
 
-export const useProducts = () => {
-  const context = useContext(ProductContext);
-  if (!context) {
-    throw new Error("useProducts must be used within a ProductProvider");
-  }
-  return context;
-};
+// Exportar ambos como objetos nombrados
+export { ProductProvider, useProducts };
