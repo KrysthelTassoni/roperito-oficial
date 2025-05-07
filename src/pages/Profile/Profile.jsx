@@ -1,5 +1,5 @@
 import { Container, Row, Col, Card, Button, Nav, Tab } from "react-bootstrap";
-import { FaUser, FaStar, FaFolderMinus } from "react-icons/fa";
+import { FaUser, FaFolderMinus } from "react-icons/fa";
 import { useAuth } from "../../context/AuthContext";
 import ProductCard from "../../components/ProductCard/ProductCard";
 import { useProducts } from "../../context/ProductContext";
@@ -31,7 +31,9 @@ const Profile = () => {
       <Col lg={7} className="mb-4">
         <Card>
           <Card.Body className="d-flex flex-row justify-content-between align-items-center">
-            <CustomAvatar />
+            <div className="d-flex align-items-center gap-3">
+              <CustomAvatar />
+            </div>
             <div className="d-flex flex-column align-items-center gap-3">
               <div className="text-muted small">
                 {user?.email || "test@example.com"}

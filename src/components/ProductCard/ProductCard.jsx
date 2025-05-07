@@ -1,6 +1,6 @@
 import { Card, Button, Dropdown, ButtonGroup } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
-import { FaEdit, FaTrash, FaStar, FaHeart, FaRegHeart } from "react-icons/fa";
+import { FaEdit, FaTrash, FaHeart, FaRegHeart } from "react-icons/fa";
 import { defaultImages } from "../../config/images";
 import Desplegable from "../Desplegable/Desplegable";
 import FavoriteButton from "../CustomButton/FavoriteButton/FavoriteButton";
@@ -8,6 +8,7 @@ import CustomButton from "../CustomButton/CustomButton";
 import { useAuth } from "../../context/AuthContext";
 import { useState } from "react";
 import CustomModal from "../CustomModal/CustomModal";
+import UserRating from "../UserRating/UserRating";
 
 const ProductCard = ({ product, myProducts = false }) => {
   const { isAuthenticated } = useAuth();
@@ -42,13 +43,13 @@ const ProductCard = ({ product, myProducts = false }) => {
   const getRatingInfo = () => {
     if (myProducts && product.rating) {
       return {
-        rating: product.rating.average,
-        total: product.rating.total,
+        rating: product.rating.average || 0,
+        total: product.rating.total || 0,
       };
     }
     return {
-      rating: product.seller?.rating || 0,
-      total: product.seller?.totalRatings || 0,
+      rating: product.seller?.rating?.average || 0,
+      total: product.seller?.rating?.total || 0,
     };
   };
 
@@ -91,12 +92,14 @@ const ProductCard = ({ product, myProducts = false }) => {
       <Card.Body className="d-flex flex-column">
         <Card.Title>{product.name || product.title}</Card.Title>
         <Card.Text className="text-primary fw-bold">${product.price}</Card.Text>
-        <div className="d-flex align-items-center mb-2">
-          <FaStar className="text-warning me-1" />
-          <span>
-            {ratingInfo.rating} ({ratingInfo.total})
-          </span>
-        </div>
+        {(ratingInfo.rating > 0 || ratingInfo.total > 0) && (
+          <div className="mb-2">
+            <UserRating 
+              averageRating={ratingInfo.rating} 
+              totalRatings={ratingInfo.total} 
+            />
+          </div>
+        )}
         <Button
           as={Link}
           to={`/product/${product.id}`}
