@@ -14,6 +14,8 @@ import { BsCircleFill } from "react-icons/bs";
 import { useProducts } from "../../context/ProductContext";
 import FavoriteButton from "../../components/CustomButton/FavoriteButton/FavoriteButton";
 import "./ProductDetail.css";
+import CustomButton from "../../components/CustomButton/CustomButton";
+import CustomModal from "../../components/CustomModal/CustomModal";
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -75,7 +77,9 @@ const ProductDetail = () => {
                     src={thumbUrl}
                     alt={`Miniatura ${index + 1}`}
                     onClick={() => setActiveIndex(index)}
-                    className={`thumbnail-image ${activeIndex === index ? 'active' : ''}`}
+                    className={`thumbnail-image ${
+                      activeIndex === index ? "active" : ""
+                    }`}
                   />
                 ))}
               </div>
@@ -88,9 +92,17 @@ const ProductDetail = () => {
             <div>
               <h1 className="mb-3">{product.name || product.title}</h1>
               <div className="status-container">
-                <BsCircleFill className={`status-icon ${product.status.toLowerCase() === 'disponible' ? 'available' : 'sold'}`} />
+                <BsCircleFill
+                  className={`status-icon ${
+                    product.status.toLowerCase() === "disponible"
+                      ? "available"
+                      : "sold"
+                  }`}
+                />
                 <span className="status-text">
-                  {product.status.toLowerCase() === 'disponible' ? 'Disponible' : 'Vendido'}
+                  {product.status.toLowerCase() === "disponible"
+                    ? "Disponible"
+                    : "Vendido"}
                 </span>
               </div>
             </div>
@@ -124,40 +136,31 @@ const ProductDetail = () => {
             </div>
           </div>
 
-          <Button
+          <CustomButton
+            title={"Contactar al Vendedor"}
             variant="primary"
-            size="lg"
-            className="contact-button"
+            style="contact-button"
             onClick={() => setShowContactModal(true)}
-          >
-            Contactar al Vendedor
-          </Button>
+          />
         </Col>
       </Row>
 
-      <Modal show={showContactModal} onHide={() => setShowContactModal(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>Información de Contacto</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <p>
-            <strong>Teléfono:</strong> {product.seller.phone}
-          </p>
-          <p>
-            <strong>Email:</strong> {product.seller.email}
-          </p>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button
-            variant="secondary"
-            onClick={() => setShowContactModal(false)}
-          >
-            Cerrar
-          </Button>
-        </Modal.Footer>
-      </Modal>
+      <CustomModal
+        showModal={showContactModal}
+        closeModal={() => setShowContactModal(false)}
+        textHeader={"Información de Contacto"}
+        textButtonCancel="Cerrar"
+        variant="danger"
+      >
+        <p>
+          <strong>Teléfono:</strong> {product.seller.phone}
+        </p>
+        <p>
+          <strong>Email:</strong> {product.seller.email}
+        </p>
+      </CustomModal>
     </Container>
   );
 };
 
-export default ProductDetail; 
+export default ProductDetail;

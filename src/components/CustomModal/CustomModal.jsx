@@ -8,8 +8,10 @@ export default function CustomModal({
   children,
   showModal,
   closeModal,
-  confirm,
-  textButtonConfirm,
+  confirm = null,
+  textButtonConfirm = null,
+  textButtonCancel = "Cancelar",
+  variant = "outline-primary",
 }) {
   return (
     <Modal
@@ -25,17 +27,19 @@ export default function CustomModal({
       <Modal.Body className="custom-modal-body">{children}</Modal.Body>
       <Modal.Footer className="custom-modal-footer">
         <CustomButton
-          title={"Cancelar"}
+          title={textButtonCancel}
           onClick={closeModal}
-          variant="outline-primary"
+          variant={variant}
           style="ms-2"
         />
-        <CustomButton
-          title={textButtonConfirm}
-          variant="primary"
-          onClick={confirm}
-          style="ms-2"
-        />
+        {confirm && (
+          <CustomButton
+            title={textButtonConfirm}
+            variant="primary"
+            onClick={confirm}
+            style="ms-2"
+          />
+        )}
       </Modal.Footer>
     </Modal>
   );
