@@ -18,10 +18,14 @@ const Register = () => {
   } = useForm();
   const password = watch("password");
 
-  const onSubmit = (data) => {
-    // Aquí irá la lógica de registro cuando conectemos con el backend
-    console.log(data);
-    toast.success("¡Registro exitoso!");
+  const onSubmit = async (data) => {
+    try {
+      // Aquí irá la lógica de registro cuando conectemos con el backend
+      console.log(data);
+      toast.success("¡Registro exitoso!");
+    } catch (error) {
+      toast.error("Ocurrió un error al registrar. Intenta nuevamente.");
+    }
   };
 
   return (

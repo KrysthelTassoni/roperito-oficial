@@ -9,23 +9,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { CgClose } from "react-icons/cg";
 import { IoClose } from "react-icons/io5";
-
-// Extraer categorías únicas de los productos
-const CATEGORY_OPTIONS = [...new Set(AllProducts.map(product => product.category))]
-  .map(category => ({
-    value: category,
-    label: category.charAt(0).toUpperCase() + category.slice(1)
-  }));
-
-const SIZE_OPTIONS = [
-  { value: "XS", label: "XS" },
-  { value: "S", label: "S" },
-  { value: "M", label: "M" },
-  { value: "L", label: "L" },
-  { value: "XL", label: "XL" },
-  { value: "U", label: "U" },
-  { value: "42", label: "42" },
-];
+import { CATEGORY_OPTIONS, SIZE_OPTIONS } from '../../constants/selectOptions';
+import { productService } from '../../services/productService';
 
 const CreateProduct = () => {
   const location = useLocation();
@@ -67,13 +52,25 @@ const CreateProduct = () => {
     );
   };
 
-  const onSubmit = (data) => {
-    if (productToEdit) {
-      console.log("Editando producto:", data);
-      toast.success("¡Producto editado exitosamente!");
-    } else {
-      console.log("Creando producto:", data);
-      toast.success("¡Producto creado exitosamente!");
+  const onSubmit = async (data) => {
+    try {
+      // Transformar imágenes a array de strings si es necesario
+      const images = selectedImages.map(img => img.url);
+      const productData = { ...data, images };
+      if (productToEdit) {
+        await productService.update(productToEdit.id, productData);
+        toast.success("¡Producto editado exitosamente!");
+      } else {
+        await productService.create(productData);
+        toast.success("¡Producto creado exitosamente!");
+      }
+      navigate('/gallery');
+    } catch (error) {
+      if (error.response && error.response.data && error.response.data.error) {
+        toast.error(error.response.data.error);
+      } else {
+        toast.error("Ocurrió un error. Intenta nuevamente.");
+      }
     }
   };
 

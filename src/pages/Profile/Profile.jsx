@@ -10,20 +10,36 @@ import { CiFolderOn } from "react-icons/ci";
 import CustomButton from "../../components/CustomButton/CustomButton";
 import { PiPlus } from "react-icons/pi";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
+import { useEffect } from "react";
 
 const Profile = () => {
   const { user, isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
 
-  // Si no está autenticado, redirigir al login
+  useEffect(() => {
+    if (!user) {
+      toast.error("No se pudo cargar el perfil de usuario.");
+    }
+  }, [user]);
+
   if (!isAuthenticated) {
     navigate("/login");
     return null;
   }
 
-  const handleLogout = () => {
-    logout();
-    navigate("/");
+  if (!user) {
+    return <div className="text-center py-5">Error al cargar el perfil.</div>;
+  }
+
+  const handleLogout = async () => {
+    try {
+      await logout();
+      navigate("/");
+      toast.success("Sesión cerrada correctamente.");
+    } catch (error) {
+      toast.error("Error al cerrar sesión. Intenta nuevamente.");
+    }
   };
 
   return (

@@ -5,31 +5,7 @@ import FilterSelect from "../../components/FilterSelect/FilterSelect";
 import { AllProducts } from "../../config/data";
 import "./Gallery.css";
 import { useProducts } from "../../context/ProductContext";
-
-// Extraer categorías únicas de los productos
-const CATEGORY_OPTIONS = [
-  ...new Set(AllProducts.map((product) => product.category)),
-].map((category) => ({
-  value: category,
-  label: category.charAt(0).toUpperCase() + category.slice(1),
-}));
-
-const SIZE_OPTIONS = [
-  { value: "XS", label: "XS" },
-  { value: "S", label: "S" },
-  { value: "M", label: "M" },
-  { value: "L", label: "L" },
-  { value: "XL", label: "XL" },
-  { value: "U", label: "U" },
-  { value: "42", label: "42" },
-];
-
-const PRICE_RANGE_OPTIONS = [
-  { value: "0-5000", label: "$0 - $5.000" },
-  { value: "5000-10000", label: "$5.000 - $10.000" },
-  { value: "10000-50000", label: "$10.000 - $50.000" },
-  { value: "100000+", label: "$100.000+" },
-];
+import { CATEGORY_OPTIONS, SIZE_OPTIONS, PRICE_RANGE_OPTIONS } from '../../constants/selectOptions';
 
 const Gallery = () => {
   const { products, filters, updateFilters } = useProducts();

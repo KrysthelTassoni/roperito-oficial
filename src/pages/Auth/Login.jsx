@@ -18,18 +18,21 @@ const Login = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  const onSubmit = (data) => {
-    const foundUser = userProfile.find((user) => user.email === data.email);
-    // Aquí irá la lógica de login cuando conectemos con el backend
-
-    if (data.email === "a@gmail.com" && data.password === "123456") {
-      // Simulamos un login exitoso
-      login(foundUser, "token-demo");
-      toast.success("¡Bienvenido de vuelta!");
-      navigate("/profile");
-    } else {
-      // Simulamos un login fallido
-      toast.error("Email o contraseña incorrectos");
+  const onSubmit = async (data) => {
+    try {
+      // Aquí irá la lógica de login cuando conectemos con el backend
+      const foundUser = userProfile.find((user) => user.email === data.email);
+      if (data.email === "a@gmail.com" && data.password === "123456") {
+        // Simulamos un login exitoso
+        login(foundUser, "token-demo");
+        toast.success("¡Bienvenido de vuelta!");
+        navigate("/profile");
+      } else {
+        // Simulamos un login fallido
+        toast.error("Email o contraseña incorrectos");
+      }
+    } catch (error) {
+      toast.error("Ocurrió un error al iniciar sesión. Intenta nuevamente.");
     }
   };
 
