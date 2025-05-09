@@ -9,9 +9,11 @@ export const productImageService = {
     },
 
     // Subir nueva imagen
-    uploadImage: async (productId, imageData) => {
+    uploadImage: async (productId, { file, is_main, order }) => {
         const formData = new FormData();
-        formData.append('image', imageData);
+        formData.append('image', file);
+        if (is_main !== undefined) formData.append('is_main', is_main);
+        if (order !== undefined) formData.append('order', order);
         const response = await apiClient.post(
             API_CONFIG.ENDPOINTS.PRODUCTS.IMAGES(productId),
             formData,
@@ -27,7 +29,17 @@ export const productImageService = {
     // Establecer imagen principal
     setMainImage: async (productId, imageId) => {
         const response = await apiClient.patch(
-            `${API_CONFIG.ENDPOINTS.PRODUCTS.IMAGES(productId)}/${imageId}/main`
+            API_CONFIG.ENDPOINTS.PRODUCTS.IMAGE_SET_MAIN(productId, imageId)
+        );
+        return response.data;
+    },
+
+    // Reordenar imágenes
+    reorderImages: async (productId, imagesOrder) => {
+        // imagesOrder: [{ imageId, newOrder }]
+        const response = await apiClient.patch(
+            API_CONFIG.ENDPOINTS.PRODUCTS.IMAGE_REORDER(productId),
+            { imagesOrder }
         );
         return response.data;
     },
@@ -35,7 +47,7 @@ export const productImageService = {
     // Eliminar imagen
     deleteImage: async (productId, imageId) => {
         const response = await apiClient.delete(
-            `${API_CONFIG.ENDPOINTS.PRODUCTS.IMAGES(productId)}/${imageId}`
+            API_CONFIG.ENDPOINTS.PRODUCTS.IMAGE_DELETE(productId, imageId)
         );
         return response.data;
     }

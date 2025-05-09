@@ -13,6 +13,9 @@ export const API_CONFIG = {
             DELETE: (id) => `/api/products/${id}`,
             RATINGS: (id) => `/api/products/${id}/ratings`,
             IMAGES: (id) => `/api/products/${id}/images`,
+            IMAGE_SET_MAIN: (productId, imageId) => `/api/products/${productId}/images/${imageId}/set-main`,
+            IMAGE_REORDER: (productId) => `/api/products/${productId}/images/reorder`,
+            IMAGE_DELETE: (productId, imageId) => `/api/products/${productId}/images/${imageId}`
         },
         USERS: {
             PROFILE: '/api/users/me',
