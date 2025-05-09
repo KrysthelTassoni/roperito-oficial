@@ -26,11 +26,16 @@ const ProductDetail = () => {
   const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
-    const foundProduct = products.find((p) => p.id === id);
-    if (foundProduct) {
-      setProduct(foundProduct);
+    try {
+      const foundProduct = products.find((p) => p.id === id);
+      if (foundProduct) {
+        setProduct(foundProduct);
+      }
+      setLoading(false);
+    } catch (error) {
+      console.error("Error al cargar el producto:", error);
+      toast.error("Error al cargar el producto. Inténtalo de nuevo más tarde.");
     }
-    setLoading(false);
   }, [id, products]);
 
   if (loading) {

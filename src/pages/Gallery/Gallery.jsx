@@ -5,14 +5,25 @@ import FilterSelect from "../../components/FilterSelect/FilterSelect";
 import { AllProducts } from "../../config/data";
 import "./Gallery.css";
 import { useProducts } from "../../context/ProductContext";
-import { CATEGORY_OPTIONS, SIZE_OPTIONS, PRICE_RANGE_OPTIONS } from '../../constants/selectOptions';
+import {
+  CATEGORY_OPTIONS,
+  SIZE_OPTIONS,
+  PRICE_RANGE_OPTIONS,
+} from "../../constants/selectOptions";
+import { toast } from "react-toastify";
 
 const Gallery = () => {
   const { products, filters, updateFilters } = useProducts();
 
   const handleFilterChange = (field, value) => {
-    console.log(value);
-    updateFilters({ [field]: value });
+    try {
+      updateFilters({ [field]: value });
+    } catch (error) {
+      console.error("Error al actualizar el filtro:", error);
+      toast.error(
+        "Error al actualizar el filtro. Por favor, inténtalo de nuevo."
+      );
+    }
   };
 
   return (

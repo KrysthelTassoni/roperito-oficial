@@ -4,13 +4,21 @@ import ProductCard from "../../components/ProductCard/ProductCard";
 import SearchBar from "../../components/SearchBar/SearchBar";
 import "./Home.css";
 import { useProducts } from "../../context/ProductContext";
+import { toast } from "react-toastify";
 
 const Home = () => {
   const { products, loading, error, filters, updateFilters, isSearching } =
     useProducts();
 
   const handleSearchChange = (e) => {
-    updateFilters({ search: e.target.value });
+    try {
+      updateFilters({ search: e.target.value });
+    } catch (error) {
+      console.error("Error al actualizar el filtro de búsqueda:", error);
+      toast.error(
+        "Ocurrió un error al actualizar el filtro de búsqueda. Por favor, inténtalo de nuevo."
+      );
+    }
   };
 
   if (loading) {

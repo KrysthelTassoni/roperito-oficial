@@ -4,6 +4,7 @@ import { useProducts } from "../../../context/ProductContext";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { Button } from "react-bootstrap";
 import "./FavoriteButton.css";
+import { toast } from "react-toastify";
 
 export default function FavoriteButton({ product }) {
   const { isAuthenticated } = useAuth();
@@ -17,6 +18,7 @@ export default function FavoriteButton({ product }) {
       removeFromFavorites(product.id);
     } else {
       addToFavorites(product);
+      toast.success("Producto añadido a favorito!");
     }
   };
 

@@ -17,7 +17,7 @@ export default function CustomInput({
   value = "",
 }) {
   return (
-    <Form.Group className="mb-4">
+    <Form.Group className="mb-4" style={{ width: "100%" }}>
       <Form.Label className="custom-input-label">{label}</Form.Label>
 
       <div

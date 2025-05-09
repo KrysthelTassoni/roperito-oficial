@@ -30,7 +30,7 @@ export default function CustomAvatar() {
       country: "Chile",
       city: user?.city || defaultUser.city,
       region: user?.region || defaultUser.region,
-    }
+    },
   });
 
   const [showModal, setShowModal] = useState(false);
@@ -47,7 +47,7 @@ export default function CustomAvatar() {
 
   // Función para obtener el nombre de la región a partir de su valor
   const getRegionLabel = (value) => {
-    const region = REGIONS_CHILE.find(r => r.value === value);
+    const region = REGIONS_CHILE.find((r) => r.value === value);
     return region ? region.label : value;
   };
 
@@ -60,15 +60,20 @@ export default function CustomAvatar() {
         <div>
           <div className="d-flex align-items-center gap-3">
             <h3>{user?.name || defaultUser.name}</h3>
-            <UserRating 
-              averageRating={user?.rating?.average || 0} 
-              totalRatings={user?.rating?.total || 0} 
+            <UserRating
+              averageRating={user?.rating?.average || 0}
+              totalRatings={user?.rating?.total || 0}
             />
           </div>
           <p>
-            {(user?.city || defaultUser.city) && (user?.region || defaultUser.region)
-              ? `${user?.city || defaultUser.city}, ${getRegionLabel(user?.region || defaultUser.region)}, ${user?.country || defaultUser.country}`
-              : `${defaultUser.city}, ${getRegionLabel(defaultUser.region)}, ${defaultUser.country}`}
+            {(user?.city || defaultUser.city) &&
+            (user?.region || defaultUser.region)
+              ? `${user?.city || defaultUser.city}, ${getRegionLabel(
+                  user?.region || defaultUser.region
+                )}, ${user?.country || defaultUser.country}`
+              : `${defaultUser.city}, ${getRegionLabel(defaultUser.region)}, ${
+                  defaultUser.country
+                }`}
           </p>
         </div>
       </div>
@@ -92,7 +97,7 @@ export default function CustomAvatar() {
         textButtonConfirm={"Guardar cambios"}
         textHeader={"Editar perfil"}
       >
-        <Form onSubmit={handleSubmit(onSubmit)}>
+        <Form onSubmit={handleSubmit(onSubmit)} className="contain-form">
           <CustomInput
             value={user?.name || defaultUser.name}
             label={"Nombre"}

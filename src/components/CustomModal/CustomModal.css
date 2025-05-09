@@ -6,10 +6,11 @@
   color: #5e4b8b;
   width: 100%;
   max-width: 600px;
-  align-items: center;
+  padding: 1rem;
 }
 
 .modal.show .modal-dialog {
+  margin: 1rem auto;
   width: 100%;
   max-width: 600px;
 }
@@ -19,13 +20,40 @@
   border: none;
   background-color: transparent;
   color: var(--primary-color);
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
 }
 
 .custom-modal-body {
   font-size: 1.1rem;
   color: #6a4cad;
+  width: 100%;
+  display: flex;
+  justify-content: center;
 }
 
 .custom-modal-backdrop {
   background-color: rgba(0, 0, 0, 0.3);
+  width: 100%;
+  height: 100%;
+}
+
+/* Responsividad en móviles */
+@media (max-width: 576px) {
+  .custom-modal-content {
+    max-width: 95vw;
+    padding: 1rem;
+  }
+
+  .modal.show .modal-dialog {
+    max-width: 95vw;
+    margin: 1rem auto;
+  }
+
+  .custom-modal-body,
+  .custom-modal-footer {
+    width: 100%;
+  }
 }

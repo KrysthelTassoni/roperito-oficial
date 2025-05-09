@@ -31,3 +31,25 @@
   justify-content: space-around;
   gap: 8px;
 }
+
+.contain-form {
+  width: 25rem;
+}
+
+/* Adaptaciones móviles */
+@media (max-width: 576px) {
+  .fono {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.5rem;
+  }
+
+  .contain-form {
+    width: 100%;
+    padding: 0 1rem;
+  }
+
+  .avatar-contain {
+    padding: 0.5rem;
+  }
+}
