@@ -1,9 +1,8 @@
-import { Container, Form, Button, Card, Row, Col } from "react-bootstrap";
+import { Container, Form, Card, Row, Col } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import CustomButton from "../../components/CustomButton/CustomButton";
 import FilterSelect from "../../components/FilterSelect/FilterSelect";
-import { AllProducts } from "../../config/data";
 import "./CreateProduct.css";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
