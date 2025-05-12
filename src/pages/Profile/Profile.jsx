@@ -1,8 +1,7 @@
-import { Container, Row, Col, Card, Button, Nav, Tab } from "react-bootstrap";
-import { FaUser, FaFolderMinus } from "react-icons/fa";
+import { Container, Row, Col, Card, Nav, Tab } from "react-bootstrap";
+import { FaUser } from "react-icons/fa";
 import { useAuth } from "../../context/AuthContext";
 import ProductCard from "../../components/ProductCard/ProductCard";
-import { useProducts } from "../../context/ProductContext";
 import CustomAvatar from "../../components/CustomAvatar/CustomAvatar";
 import "./Profile.css";
 import { BiHeart, BiLogOut } from "react-icons/bi";
@@ -11,15 +10,17 @@ import CustomButton from "../../components/CustomButton/CustomButton";
 import { PiPlus } from "react-icons/pi";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 const Profile = () => {
   const { user, isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
+  const hasShownError = useRef(false);
 
   useEffect(() => {
-    if (!user) {
+    if (!user && !hasShownError.current) {
       toast.error("No se pudo cargar el perfil de usuario.");
+      hasShownError.current = true;
     }
   }, [user]);
 

@@ -2,7 +2,6 @@ import { Container, Row, Col } from "react-bootstrap";
 import ProductCard from "../../components/ProductCard/ProductCard";
 import SearchBar from "../../components/SearchBar/SearchBar";
 import FilterSelect from "../../components/FilterSelect/FilterSelect";
-import { AllProducts } from "../../config/data";
 import "./Gallery.css";
 import { useProducts } from "../../context/ProductContext";
 import {

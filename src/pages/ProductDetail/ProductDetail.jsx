@@ -2,9 +2,7 @@ import {
   Container,
   Row,
   Col,
-  Button,
   Badge,
-  Modal,
   Carousel,
 } from "react-bootstrap";
 import { useState, useEffect } from "react";
@@ -16,6 +14,7 @@ import FavoriteButton from "../../components/CustomButton/FavoriteButton/Favorit
 import "./ProductDetail.css";
 import CustomButton from "../../components/CustomButton/CustomButton";
 import CustomModal from "../../components/CustomModal/CustomModal";
+import { toast } from "react-toastify";
 
 const ProductDetail = () => {
   const { id } = useParams();
