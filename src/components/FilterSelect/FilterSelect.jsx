@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import "./FilterSelect.css";
 
 const FilterSelect = ({ value, onChange, options, placeholder, name }) => {
+  // console.log("que recibo en options: ", options);
   return (
     <Form.Select
       value={value}

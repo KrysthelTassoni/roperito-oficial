@@ -37,9 +37,10 @@ const CreateProduct = () => {
     const getMetadata = async () => {
       try {
         const { categories } = await metadataService.getCategories();
-        const { size } = await metadataService.getSizes();
+        const { sizes } = await metadataService.getSizes();
+        console.log("categoria ", categories);
         setCategories(categories);
-        setsize(size);
+        setsize(sizes);
       } catch (error) {}
     };
 
