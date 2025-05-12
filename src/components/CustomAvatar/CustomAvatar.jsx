@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { FaEdit, FaUser, FaMapMarkerAlt } from "react-icons/fa";
 import "./CustomAvatar.css";
@@ -14,9 +14,10 @@ import FilterSelect from "../FilterSelect/FilterSelect";
 import { REGIONS_CHILE } from "../../config/locations";
 import { userProfile } from "../../config/data";
 import UserRating from "../UserRating/UserRating";
+import { userService } from "../../services";
 
 export default function CustomAvatar() {
-  const { user } = useAuth();
+  const { user, setUser, setRefresh, refresh } = useAuth();
   const defaultUser = userProfile[0]; // Usando el primer usuario como default
 
   const {
@@ -24,7 +25,6 @@ export default function CustomAvatar() {
     handleSubmit,
     formState: { errors },
     setValue,
-    watch,
   } = useForm({
     defaultValues: {
       country: "Chile",
@@ -35,14 +35,48 @@ export default function CustomAvatar() {
 
   const [showModal, setShowModal] = useState(false);
 
+  useEffect(() => {
+    if (user?.user) {
+      setValue("name", user.user.name);
+      setValue("phone_number", user.user.phone_number);
+      //  setValue("city", user.city);
+      //  setValue("region", user.region);
+      //  setValue("country", user.country);
+      console.log(user.user);
+    }
+  }, [user, setValue]);
+
   const handleRegionChange = (field, value) => {
     setValue(field, value);
   };
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     // Aquí irá la lógica de registro cuando conectemos con el backend
-    console.log(data);
-    toast.success("¡Registro exitoso!");
+
+    try {
+      const response = await userService.updateProfile(data);
+      if (response) {
+        //response solo trae un message por eso colocamos el data que viene en props
+        toast.success("Datos modificados correctamente");
+        setShowModal(false);
+        setUser((prev) => ({
+          ...prev,
+          user: {
+            ...prev.user,
+            name: data.name,
+            phone_number: data.phone_number,
+          },
+          city: data.city,
+          region: data.region,
+          country: data.country,
+        }));
+
+        // setRefresh(!refresh);
+      }
+    } catch (error) {
+      toast.error("error al modificar datos personales");
+      console.log("error al modificar datos personales" + error);
+    }
   };
 
   // Función para obtener el nombre de la región a partir de su valor
@@ -59,7 +93,7 @@ export default function CustomAvatar() {
         </div>
         <div>
           <div className="d-flex align-items-center gap-3">
-            <h3>{user?.name || defaultUser.name}</h3>
+            <h3>{user.user.name}</h3>
             <UserRating
               averageRating={user?.rating?.average || 0}
               totalRatings={user?.rating?.total || 0}
@@ -81,7 +115,7 @@ export default function CustomAvatar() {
       <div className="fono">
         <div className="d-flex gap-2 align-items-center">
           <PiPhone />
-          <p>{user?.phone || defaultUser.phone}</p>
+          <p>{user.user.phone_number}</p>
         </div>
 
         <CustomButton
@@ -99,7 +133,6 @@ export default function CustomAvatar() {
       >
         <Form onSubmit={handleSubmit(onSubmit)} className="contain-form">
           <CustomInput
-            value={user?.name || defaultUser.name}
             label={"Nombre"}
             type={"text"}
             name={"name"}
@@ -113,24 +146,9 @@ export default function CustomAvatar() {
             icon={<FaUser />}
           />
           <CustomInput
-            value={user?.email || defaultUser.email}
-            label={"Correo electrónico"}
-            type={"email"}
-            name={"email"}
-            required={"El email es requerido"}
-            pattern={{
-              value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-              message: "Email inválido",
-            }}
-            register={register}
-            errors={errors}
-            icon={<MdEmail />}
-          />
-          <CustomInput
-            value={user?.phone || defaultUser.phone}
             label={"Teléfono"}
             type={"phone"}
-            name={"phone"}
+            name={"phone_number"}
             required={"El número de teléfono es requerido"}
             register={register}
             errors={errors}
@@ -139,7 +157,6 @@ export default function CustomAvatar() {
 
           {/* Campos de dirección */}
           <CustomInput
-            value={user?.city || defaultUser.city}
             label={"Ciudad"}
             type={"text"}
             name={"city"}
@@ -151,7 +168,6 @@ export default function CustomAvatar() {
           <Form.Group className="mb-4">
             <Form.Label className="custom-input-label">Región</Form.Label>
             <FilterSelect
-              value={watch("region") || defaultUser.region}
               onChange={handleRegionChange}
               options={REGIONS_CHILE}
               placeholder="Selecciona una región"

@@ -6,11 +6,12 @@ import FilterSelect from "../../components/FilterSelect/FilterSelect";
 import { AllProducts } from "../../config/data";
 import "./CreateProduct.css";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CgClose } from "react-icons/cg";
 import { IoClose } from "react-icons/io5";
-import { CATEGORY_OPTIONS, SIZE_OPTIONS } from '../../constants/selectOptions';
-import { productService } from '../../services/productService';
+import { CATEGORY_OPTIONS, SIZE_OPTIONS } from "../../constants/selectOptions";
+import { productService } from "../../services/productService";
+import { metadataService } from "../../services";
 
 const CreateProduct = () => {
   const location = useLocation();
@@ -30,6 +31,21 @@ const CreateProduct = () => {
   const [selectedImages, setSelectedImages] = useState(
     productToEdit?.images?.map((url) => ({ url })) || []
   );
+  const [categories, setCategories] = useState([]);
+  const [size, setsize] = useState([]);
+
+  useEffect(() => {
+    const getMetadata = async () => {
+      try {
+        const { categories } = await metadataService.getCategories();
+        const { size } = await metadataService.getSizes();
+        setCategories(categories);
+        setsize(size);
+      } catch (error) {}
+    };
+
+    getMetadata();
+  }, []);
 
   const handleSelectChange = (field, value) => {
     setValue(field, value);
@@ -55,7 +71,7 @@ const CreateProduct = () => {
   const onSubmit = async (data) => {
     try {
       // Transformar imágenes a array de strings si es necesario
-      const images = selectedImages.map(img => img.url);
+      const images = selectedImages.map((img) => img.url);
       const productData = { ...data, images };
       if (productToEdit) {
         await productService.update(productToEdit.id, productData);
@@ -64,7 +80,7 @@ const CreateProduct = () => {
         await productService.create(productData);
         toast.success("¡Producto creado exitosamente!");
       }
-      navigate('/gallery');
+      navigate("/gallery");
     } catch (error) {
       if (error.response && error.response.data && error.response.data.error) {
         toast.error(error.response.data.error);
@@ -77,7 +93,10 @@ const CreateProduct = () => {
   return (
     <div className="create-product">
       <Container className="py-5">
-        <Card className="mx-auto position-relative" style={{ maxWidth: "600px" }}>
+        <Card
+          className="mx-auto position-relative"
+          style={{ maxWidth: "600px" }}
+        >
           <button
             className="close-button"
             onClick={() => navigate(-1)}
@@ -130,7 +149,7 @@ const CreateProduct = () => {
                     <FilterSelect
                       value={watch("size") || ""}
                       onChange={handleSelectChange}
-                      options={SIZE_OPTIONS}
+                      options={size}
                       placeholder="Selecciona una talla"
                       name="size"
                     />
@@ -147,7 +166,7 @@ const CreateProduct = () => {
                     <FilterSelect
                       value={watch("category") || ""}
                       onChange={handleSelectChange}
-                      options={CATEGORY_OPTIONS}
+                      options={categories}
                       placeholder="Selecciona una categoría"
                       name="category"
                     />
