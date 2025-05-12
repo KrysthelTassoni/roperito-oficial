@@ -1,21 +1,33 @@
 import { createContext, useState, useContext, useEffect } from "react";
+import { productService, userService } from "../services";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [refresh, setRefresh] = useState(false);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      setIsAuthenticated(true);
-    }
-    console.log("token es: ", token);
-  }, []);
+    const initializeAuth = async () => {
+      const token = localStorage.getItem("token");
+      if (token) {
+        try {
+          const user = await userService.getProfile(token);
+          setUser(user);
+          setIsAuthenticated(true);
+        } catch (error) {
+          console.error("Error cargando perfil:", error);
+          logout(); // opcional: si el token ya no es válido
+        }
+      }
+    };
+
+    initializeAuth();
+  }, [refresh]);
 
   const login = (userData, token) => {
-    console.log("que recibe data: ", userData);
+    // console.log("que recibe data: ", userData);
     setUser(userData);
     setIsAuthenticated(true);
     localStorage.setItem("token", token);
@@ -28,7 +40,17 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, isAuthenticated, login, logout }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        isAuthenticated,
+        login,
+        logout,
+        setUser,
+        setRefresh,
+        refresh,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );

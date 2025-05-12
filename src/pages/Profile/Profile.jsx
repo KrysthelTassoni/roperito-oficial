@@ -52,9 +52,7 @@ const Profile = () => {
               <CustomAvatar />
             </div>
             <div className="d-flex flex-column align-items-center gap-3">
-              <div className="text-muted small">
-                {user?.email || "test@example.com"}
-              </div>
+              <div className="text-muted small">{user.user.email}</div>
               <CustomButton
                 title="Cerrar Sesión"
                 icon={<BiLogOut />}
@@ -103,7 +101,7 @@ const Profile = () => {
                         </Col>
                       ))
                     ) : (
-                      <Col xs={12}>
+                      <Col xs={12} className="no-products">
                         <div className="text-center py-4">
                           <p className="text-muted">
                             No tienes publicaciones aún
@@ -128,7 +126,7 @@ const Profile = () => {
                         </Col>
                       ))
                     ) : (
-                      <Col xs={12}>
+                      <Col xs={12} className="no-products">
                         <div className="text-center py-4">
                           <p className="text-muted">No tienes favoritos aún</p>
                           <CustomButton

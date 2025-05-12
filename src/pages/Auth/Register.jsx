@@ -1,6 +1,6 @@
 import { Container, Form, Button, Card } from "react-bootstrap";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import CustomInput from "../../components/CustomInput/CustomInput";
 import { BiUser } from "react-icons/bi";
@@ -8,6 +8,7 @@ import { MdEmail, MdPassword } from "react-icons/md";
 import { GiConfirmed } from "react-icons/gi";
 import { PiPhone } from "react-icons/pi";
 import CustomButton from "../../components/CustomButton/CustomButton";
+import { authService } from "../../services";
 
 const Register = () => {
   const {
@@ -17,12 +18,20 @@ const Register = () => {
     watch,
   } = useForm();
   const password = watch("password");
+  const navigate = useNavigate();
 
   const onSubmit = async (data) => {
     try {
       // Aquí irá la lógica de registro cuando conectemos con el backend
       console.log(data);
-      toast.success("¡Registro exitoso!");
+
+      const response = await authService.register(data);
+
+      if (response) {
+        toast.success("¡Registro exitoso!");
+        console.log("que trae response en register: ", response);
+        navigate("/login");
+      }
     } catch (error) {
       toast.error("Ocurrió un error al registrar. Intenta nuevamente.");
     }
