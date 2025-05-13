@@ -3,19 +3,27 @@ import PropTypes from "prop-types";
 import "./FilterSelect.css";
 
 const FilterSelect = ({ value, onChange, options, placeholder, name }) => {
-  // console.log("que recibo en options: ", options);
+  console.log(`FilterSelect - Recibiendo: value=${value}, name=${name}, opciones=`, options);
+  
   return (
     <Form.Select
       value={value}
-      onChange={(e) => onChange(name, e.target.value)}
+      onChange={(e) => {
+        console.log(`FilterSelect - Cambiando ${name} a:`, e.target.value);
+        onChange(name, e.target.value);
+      }}
       className="filter-select"
     >
       <option value="">{placeholder}</option>
-      {options.map((option) => (
-        <option key={option.id || option.value} value={option.value || option.id}>
-          {option.label || option.name}
-        </option>
-      ))}
+      {options.map((option) => {
+        const optionValue = option.value || option.id;
+        const optionLabel = option.label || option.name;
+        return (
+          <option key={optionValue} value={optionValue}>
+            {optionLabel}
+          </option>
+        );
+      })}
     </Form.Select>
   );
 };

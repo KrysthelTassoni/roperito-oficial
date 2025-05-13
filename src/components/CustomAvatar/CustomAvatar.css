@@ -1,39 +1,59 @@
 .avatar-contain {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 0.5rem;
+  width: 100%;
 }
 
 .info-user {
   display: flex;
-  flex-direction: row;
+  gap: 1rem;
   align-items: center;
-  gap: 4px;
-}
-
-.avatar-contain h3 {
-  margin-bottom: 2px;
-  font-size: 1.1rem;
-  color: var(--primary-color);
-}
-
-.avatar-contain p {
-  margin-top: 0;
-  margin-bottom: 0;
-  font-size: 0.9rem;
-  color: var(--primary-color);
 }
 
 .fono {
   display: flex;
-  flex-direction: row;
+  justify-content: space-between;
   align-items: center;
-  justify-content: space-around;
-  gap: 8px;
+}
+
+.fono p {
+  margin: 0;
+}
+
+h3 {
+  margin: 0 !important;
+  font-weight: 600 !important;
+}
+
+.avatar-contain p {
+  margin: 0 !important;
+}
+
+/* Estilos para el formulario */
+.input-with-icon {
+  position: relative;
+}
+
+.input-icon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #6c757d;
+}
+
+.input-with-icon .form-control {
+  padding-left: 35px;
+}
+
+.custom-input-label {
+  font-weight: 500;
+  margin-bottom: 5px;
 }
 
 .contain-form {
-  width: 25rem;
+  padding: 10px;
 }
 
 /* Adaptaciones móviles */

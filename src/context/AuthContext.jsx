@@ -8,22 +8,35 @@ export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [refresh, setRefresh] = useState(false);
 
-  useEffect(() => {
-    const initializeAuth = async () => {
+  const fetchUserProfile = async () => {
+    try {
       const token = localStorage.getItem("token");
       if (token) {
-        try {
-          const user = await userService.getProfile(token);
-          setUser(user);
-          setIsAuthenticated(true);
-        } catch (error) {
-          console.error("Error cargando perfil:", error);
-          logout(); // opcional: si el token ya no es válido
+        console.log("[AuthContext] Obteniendo perfil de usuario con token:", token.substring(0, 15) + "...");
+        const userData = await userService.getProfile(token);
+        console.log("[AuthContext] Datos del usuario recibidos:", userData);
+        
+        // Comprobar la estructura de los datos
+        if (userData.user) {
+          console.log("[AuthContext] Propiedades del usuario:", Object.keys(userData.user));
+          if (userData.user.address) {
+            console.log("[AuthContext] Objeto address:", userData.user.address);
+          } else {
+            console.log("[AuthContext] El usuario no tiene objeto address");
+          }
         }
+        
+        setUser(userData);
+        setIsAuthenticated(true);
       }
-    };
+    } catch (error) {
+      console.error("Error al obtener perfil de usuario:", error);
+      logout(); // Si el token ya no es válido
+    }
+  };
 
-    initializeAuth();
+  useEffect(() => {
+    fetchUserProfile();
   }, [refresh]);
 
   const login = (userData, token) => {
@@ -49,6 +62,7 @@ export const AuthProvider = ({ children }) => {
         setUser,
         setRefresh,
         refresh,
+        fetchUserProfile,
       }}
     >
       {children}

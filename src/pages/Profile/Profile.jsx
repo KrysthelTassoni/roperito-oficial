@@ -13,11 +13,31 @@ import { toast } from "react-toastify";
 import { useEffect, useRef, useState } from "react";
 import { metadataService } from "../../services";
 
+// Regiones por defecto para cuando falla la carga
+const DEFAULT_REGIONS = [
+  { value: "metropolitana", label: "Metropolitana de Santiago" },
+  { value: "valparaiso", label: "Valparaíso" },
+  { value: "biobio", label: "Biobío" },
+  { value: "arica", label: "Arica y Parinacota" },
+  { value: "tarapaca", label: "Tarapacá" },
+  { value: "antofagasta", label: "Antofagasta" },
+  { value: "atacama", label: "Atacama" },
+  { value: "coquimbo", label: "Coquimbo" },
+  { value: "ohiggins", label: "O'Higgins" },
+  { value: "maule", label: "Maule" },
+  { value: "nuble", label: "Ñuble" },
+  { value: "araucania", label: "La Araucanía" },
+  { value: "losrios", label: "Los Ríos" },
+  { value: "loslagos", label: "Los Lagos" },
+  { value: "aysen", label: "Aysén" },
+  { value: "magallanes", label: "Magallanes" }
+];
+
 const Profile = () => {
   const { user, isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
   const hasShownError = useRef(false);
-  const [regions, setRegions] = useState([]);
+  const [regions, setRegions] = useState(DEFAULT_REGIONS); // Inicializar con regiones por defecto
   const [loadingRegions, setLoadingRegions] = useState(true);
 
   useEffect(() => {
@@ -34,21 +54,21 @@ const Profile = () => {
         console.log("[Profile.jsx] Llamando a metadataService.getRegions...");
         const regionsData = await metadataService.getRegions();
         console.log("[Profile.jsx] Regiones recibidas:", regionsData);
-        if (Array.isArray(regionsData)) { 
+        
+        if (Array.isArray(regionsData) && regionsData.length > 0) { 
           setRegions(regionsData);
-          console.log("[Profile.jsx] Estado 'regions' actualizado.");
+          console.log("[Profile.jsx] Estado 'regions' actualizado con datos del servidor:", regionsData);
         } else {
-          console.error("Error: regionsData no es un array", regionsData);
-          toast.error("Error en el formato de datos de regiones");
-          setRegions([]);
+          console.warn("Advertencia: Usando regiones por defecto", DEFAULT_REGIONS);
+          setRegions(DEFAULT_REGIONS);
         }
       } catch (error) {
         console.error("Error al cargar regiones:", error);
-        toast.error("No se pudieron cargar las regiones");
-        setRegions([]);
+        toast.error("Se cargarán las regiones por defecto");
+        setRegions(DEFAULT_REGIONS);
       } finally {
         setLoadingRegions(false);
-        console.log("[Profile.jsx] Fetch de regiones finalizado. loadingRegions: false");
+        console.log("[Profile.jsx] Fetch de regiones finalizado. loadingRegions: false, regions.length:", regions.length);
       }
     }
     
@@ -73,6 +93,8 @@ const Profile = () => {
       toast.error("Error al cerrar sesión. Intenta nuevamente.");
     }
   };
+
+  console.log("[Profile.jsx] Renderizando con regions =", regions);
 
   return (
     <Container className="py-5 profile-contain">
