@@ -12,8 +12,8 @@ const FilterSelect = ({ value, onChange, options, placeholder, name }) => {
     >
       <option value="">{placeholder}</option>
       {options.map((option) => (
-        <option key={option.id} value={option.id}>
-          {option.name}
+        <option key={option.id || option.value} value={option.value || option.id}>
+          {option.label || option.name}
         </option>
       ))}
     </Form.Select>
@@ -21,16 +21,23 @@ const FilterSelect = ({ value, onChange, options, placeholder, name }) => {
 };
 
 FilterSelect.propTypes = {
-  value: PropTypes.string.isRequired,
+  value: PropTypes.string,
   onChange: PropTypes.func.isRequired,
   options: PropTypes.arrayOf(
     PropTypes.shape({
-      id: PropTypes.string.isRequired,
-      name: PropTypes.string.isRequired,
+      id: PropTypes.string,
+      name: PropTypes.string,
+      value: PropTypes.string,
+      label: PropTypes.string,
     })
   ).isRequired,
   placeholder: PropTypes.string.isRequired,
   name: PropTypes.string.isRequired,
+};
+
+// Establecer valores por defecto para evitar errores de PropTypes
+FilterSelect.defaultProps = {
+  value: "",
 };
 
 export default FilterSelect;

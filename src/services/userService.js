@@ -8,8 +8,22 @@ export const userService = {
     },
 
     updateProfile: async(updateData) => {
-        // updateData puede tener: phone, city, region, country
-        const response = await apiClient.put(API_CONFIG.ENDPOINTS.USERS.UPDATE_PROFILE, updateData);
+        // Separa los datos de usuario y dirección para coincidir con la estructura de la DB
+        const userData = {
+            name: updateData.name,
+            phone_number: updateData.phone_number
+        };
+        
+        // Crear objeto de dirección si existen datos de ubicación
+        userData.address = {
+            city: updateData.city || "",
+            region: updateData.region || "",
+            country: "Chile" // para forzar siempre Chile como país (por ahora)
+        };
+        
+        console.log("Datos enviados al backend:", userData);
+        
+        const response = await apiClient.put(API_CONFIG.ENDPOINTS.USERS.UPDATE_PROFILE, userData);
         return response.data;
     },
 

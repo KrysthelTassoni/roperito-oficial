@@ -10,12 +10,15 @@ import CustomButton from "../../components/CustomButton/CustomButton";
 import { PiPlus } from "react-icons/pi";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { metadataService } from "../../services";
 
 const Profile = () => {
   const { user, isAuthenticated, logout } = useAuth();
   const navigate = useNavigate();
   const hasShownError = useRef(false);
+  const [regions, setRegions] = useState([]);
+  const [loadingRegions, setLoadingRegions] = useState(true);
 
   useEffect(() => {
     if (!user && !hasShownError.current) {
@@ -23,6 +26,34 @@ const Profile = () => {
       hasShownError.current = true;
     }
   }, [user]);
+
+  useEffect(() => {
+    console.log("[Profile.jsx] Iniciando fetch de regiones...");
+    async function fetchRegions() {
+      try {
+        console.log("[Profile.jsx] Llamando a metadataService.getRegions...");
+        const regionsData = await metadataService.getRegions();
+        console.log("[Profile.jsx] Regiones recibidas:", regionsData);
+        if (Array.isArray(regionsData)) { 
+          setRegions(regionsData);
+          console.log("[Profile.jsx] Estado 'regions' actualizado.");
+        } else {
+          console.error("Error: regionsData no es un array", regionsData);
+          toast.error("Error en el formato de datos de regiones");
+          setRegions([]);
+        }
+      } catch (error) {
+        console.error("Error al cargar regiones:", error);
+        toast.error("No se pudieron cargar las regiones");
+        setRegions([]);
+      } finally {
+        setLoadingRegions(false);
+        console.log("[Profile.jsx] Fetch de regiones finalizado. loadingRegions: false");
+      }
+    }
+    
+    fetchRegions();
+  }, []);
 
   if (!isAuthenticated) {
     navigate("/login");
@@ -49,7 +80,7 @@ const Profile = () => {
         <Card>
           <Card.Body className="d-flex flex-row justify-content-between align-items-center">
             <div className="d-flex align-items-center gap-3">
-              <CustomAvatar />
+              <CustomAvatar regions={regions} loadingRegions={loadingRegions} />
             </div>
             <div className="d-flex flex-column align-items-center gap-3">
               <div className="text-muted small">{user.user.email}</div>

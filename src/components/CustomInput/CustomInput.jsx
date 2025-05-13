@@ -14,35 +14,38 @@ export default function CustomInput({
   register,
   errors,
   icon = null,
-  value = "",
+  disabled = false,
 }) {
   return (
     <Form.Group className="mb-4" style={{ width: "100%" }}>
       <Form.Label className="custom-input-label">{label}</Form.Label>
 
       <div
-        className={`custom-input-wrapper ${errors[name] ? "has-error" : ""}`}
+        className={`custom-input-wrapper ${errors[name] ? "has-error" : ""} ${
+          disabled ? "disabled" : ""
+        }`}
       >
         {icon && <span className="custom-input-icon">{icon}</span>}
         <div style={{ width: "100%" }}>
           <Form.Control
             type={type}
-            defaultValue={value}
             {...register(name, {
               required:
-                typeof required === "string"
+                disabled ? false : (typeof required === "string"
                   ? { value: true, message: required }
-                  : required,
-              pattern,
-              minLength,
-              validate,
+                  : required),
+              pattern: disabled ? null : pattern,
+              minLength: disabled ? null : minLength,
+              validate: disabled ? null : validate,
+              disabled: disabled
             })}
-            isInvalid={!!errors[name]}
+            isInvalid={!!errors[name] && !disabled}
             className="custom-input"
             placeholder={placeholder}
+            disabled={disabled}
           />
           <Form.Control.Feedback type="invalid" className="custom-feedback">
-            {errors[name]?.message}
+            {!disabled && errors[name]?.message}
           </Form.Control.Feedback>
         </div>
       </div>

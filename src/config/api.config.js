@@ -33,7 +33,8 @@ export const API_CONFIG = {
         },
         METADATA: {
             CATEGORIES: '/api/metadata/categories',
-            SIZES: '/api/metadata/sizes'
+            SIZES: '/api/metadata/sizes',
+            REGIONS: '/api/metadata/regions'
         },
         ORDERS: {
             BASE: '/api/orders',

@@ -11,12 +11,17 @@ import { toast } from "react-toastify";
 import { Form } from "react-bootstrap";
 import { MdEmail } from "react-icons/md";
 import FilterSelect from "../FilterSelect/FilterSelect";
-import { REGIONS_CHILE } from "../../config/locations";
 import { userProfile } from "../../config/data";
 import UserRating from "../UserRating/UserRating";
-import { userService } from "../../services";
+import { metadataService, userService } from "../../services";
+import apiClient from "../../services/apiClient";
+import { API_CONFIG } from "../../config/api.config";
+import PropTypes from 'prop-types';
 
-export default function CustomAvatar() {
+export default function CustomAvatar({ regions, loadingRegions }) {
+  // Log para ver las props recibidas
+  console.log("[CustomAvatar] Props recibidas:", { regions, loadingRegions });
+
   const { user, setUser, setRefresh, refresh } = useAuth();
   const defaultUser = userProfile[0]; // Usando el primer usuario como default
 
@@ -39,52 +44,72 @@ export default function CustomAvatar() {
     if (user?.user) {
       setValue("name", user.user.name);
       setValue("phone_number", user.user.phone_number);
-      //  setValue("city", user.city);
-      //  setValue("region", user.region);
-      //  setValue("country", user.country);
+      setValue("city", user?.city || defaultUser.city);
+      setValue("region", user?.region || defaultUser.region);
+      setValue("country", "Chile"); // Forzar siempre Chile como país
       console.log(user.user);
     }
-  }, [user, setValue]);
+  }, [user, setValue, defaultUser.city, defaultUser.region]);
 
   const handleRegionChange = (field, value) => {
     setValue(field, value);
   };
 
   const onSubmit = async (data) => {
-    // Aquí irá la lógica de registro cuando conectemos con el backend
-
     try {
-      const response = await userService.updateProfile(data);
+      const response = await apiClient.put(API_CONFIG.ENDPOINTS.USERS.UPDATE_PROFILE, data);
       if (response) {
-        //response solo trae un message por eso colocamos el data que viene en props
         toast.success("Datos modificados correctamente");
         setShowModal(false);
-        setUser((prev) => ({
-          ...prev,
-          user: {
-            ...prev.user,
-            name: data.name,
-            phone_number: data.phone_number,
-          },
-          city: data.city,
-          region: data.region,
-          country: data.country,
-        }));
-
-        // setRefresh(!refresh);
+        
+        // Actualiza el estado del usuario respetando la estructura correcta
+        setUser((prev) => {
+          // Primero creamos una copia del objeto usuario actual
+          const updatedUser = { ...prev };
+          
+          // Actualizamos los datos básicos del usuario
+          if (updatedUser.user) {
+            updatedUser.user = {
+              ...updatedUser.user,
+              name: data.name,
+              phone_number: data.phone_number
+            };
+          }
+          
+          // Actualizamos los datos de dirección según la estructura del objeto
+          // Esta actualización debe coincidir con cómo el backend devuelve los datos
+          if (response.address) {
+            // Si el backend devuelve un objeto address, usamos esa estructura
+            updatedUser.address = response.address;
+            // También actualizamos las propiedades de nivel superior por compatibilidad
+            updatedUser.city = response.address.city;
+            updatedUser.region = response.address.region;
+            updatedUser.country = response.address.country;
+          } else {
+            // Si no hay un objeto address en la respuesta, actualizamos directamente
+            updatedUser.city = data.city;
+            updatedUser.region = data.region;
+            updatedUser.country = data.country;
+          }
+          
+          return updatedUser;
+        });
       }
     } catch (error) {
-      toast.error("error al modificar datos personales");
-      console.log("error al modificar datos personales" + error);
+      toast.error("Error al modificar datos personales");
+      console.log("Error al modificar datos personales: ", error);
     }
   };
 
   // Función para obtener el nombre de la región a partir de su valor
   const getRegionLabel = (value) => {
-    const region = REGIONS_CHILE.find((r) => r.value === value);
+    if (!value || regions.length === 0) return "";
+    const region = regions.find((r) => r.value === value);
     return region ? region.label : value;
   };
 
+  // Log antes del return para verificar la condición
+  console.log("[CustomAvatar] Antes de renderizar select. loadingRegions:", loadingRegions);
   return (
     <div className="avatar-contain">
       <div className="info-user">
@@ -167,12 +192,19 @@ export default function CustomAvatar() {
           />
           <Form.Group className="mb-4">
             <Form.Label className="custom-input-label">Región</Form.Label>
-            <FilterSelect
-              onChange={handleRegionChange}
-              options={REGIONS_CHILE}
-              placeholder="Selecciona una región"
-              name="region"
-            />
+            {/* Log dentro de la condición */}
+            {loadingRegions ? (
+              console.log("[CustomAvatar] Renderizando 'Cargando regiones...'"),
+              <p>Cargando regiones...</p>
+            ) : (
+              console.log("[CustomAvatar] Renderizando FilterSelect con regions:", regions),
+              <FilterSelect
+                onChange={handleRegionChange}
+                options={regions}
+                placeholder="Selecciona una región"
+                name="region"
+              />
+            )}
             {errors.region && (
               <Form.Text className="text-danger">
                 {errors.region.message}
@@ -180,7 +212,7 @@ export default function CustomAvatar() {
             )}
           </Form.Group>
           <CustomInput
-            value={user?.country || defaultUser.country}
+            value="Chile"
             label={"País"}
             type={"text"}
             name={"country"}
@@ -194,3 +226,8 @@ export default function CustomAvatar() {
     </div>
   );
 }
+
+CustomAvatar.propTypes = {
+  regions: PropTypes.array.isRequired,
+  loadingRegions: PropTypes.bool.isRequired,
+};
