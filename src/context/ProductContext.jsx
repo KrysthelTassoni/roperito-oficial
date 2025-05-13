@@ -1,6 +1,7 @@
 import { createContext, useState, useContext, useEffect } from "react";
 import { AllProducts, userProfile } from "../config/data";
 import { useAuth } from "./AuthContext";
+import { productService } from "../services";
 
 const ProductContext = createContext();
 
@@ -16,17 +17,32 @@ function useProducts() {
 // Exportar el Provider como una función nombrada
 function ProductProvider({ children }) {
   const { user } = useAuth();
-  const [products] = useState(AllProducts);
+  const [products, setProducts] = useState(AllProducts);
   const [searchResults, setSearchResults] = useState(null);
-  const [favorites, setFavorites] = useState(user?.favorites || userProfile[0].favorites || []);
+  const [favorites, setFavorites] = useState(
+    user?.favorites || userProfile[0].favorites || []
+  );
   const [loading, setLoading] = useState(false);
   const [filters, setFilters] = useState({
     category: "",
     size: "",
     price: "",
     search: "",
-    is_active: true
+    is_active: true,
   });
+
+  useEffect(() => {
+    const getAllProducts = async () => {
+      try {
+        const response = await productService.getAll();
+        setProducts(response);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    getAllProducts();
+  }, []);
 
   // Actualizar favoritos cuando cambia el usuario
   useEffect(() => {
@@ -44,15 +60,26 @@ function ProductProvider({ children }) {
   // Función para filtrar productos
   const filterProducts = (productsToFilter) => {
     return productsToFilter.filter((product) => {
-      const matchesCategory = !filters.category || product.category === filters.category;
+      const matchesCategory =
+        !filters.category || product.category === filters.category;
       const matchesSize = !filters.size || product.size === filters.size;
-      const matchesPrice = !filters.price || isInPriceRange(product.price, filters.price);
-      const matchesSearch = !filters.search || 
+      const matchesPrice =
+        !filters.price || isInPriceRange(product.price, filters.price);
+      const matchesSearch =
+        !filters.search ||
         product.title.toLowerCase().includes(filters.search.toLowerCase()) ||
-        product.description.toLowerCase().includes(filters.search.toLowerCase());
+        product.description
+          .toLowerCase()
+          .includes(filters.search.toLowerCase());
       const matchesActive = product.is_active !== false; // Solo filtrar si es explícitamente false
 
-      return matchesCategory && matchesSize && matchesPrice && matchesSearch && matchesActive;
+      return (
+        matchesCategory &&
+        matchesSize &&
+        matchesPrice &&
+        matchesSearch &&
+        matchesActive
+      );
     });
   };
 

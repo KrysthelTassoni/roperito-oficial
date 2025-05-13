@@ -6,7 +6,6 @@ export default function Desplegable({ product }) {
   const [status, setStatus] = useState(product.status || "Estado");
 
   const handleStatusChange = (status) => {
-    console.log("Nuevo estado:", status, "para el producto", product.id);
     setStatus(status);
   };
 

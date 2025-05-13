@@ -9,6 +9,7 @@ import { useAuth } from "../../context/AuthContext";
 import { useState } from "react";
 import CustomModal from "../CustomModal/CustomModal";
 import UserRating from "../UserRating/UserRating";
+import { productService } from "../../services";
 
 const ProductCard = ({ product, myProducts = false }) => {
   const { isAuthenticated } = useAuth();
@@ -30,8 +31,13 @@ const ProductCard = ({ product, myProducts = false }) => {
     setShowConfirm(true);
   };
 
-  const confirmDelete = () => {
-    console.log("Eliminar", product.id);
+  const confirmDelete = async () => {
+    try {
+      const response = await productService.delete(product.id);
+      console.log("producto eliminado ", response);
+    } catch (error) {
+      console.error(error);
+    }
     setShowConfirm(false);
   };
 
@@ -60,8 +66,14 @@ const ProductCard = ({ product, myProducts = false }) => {
       <div className="position-relative">
         <Card.Img
           variant="top"
-          src={product.images[0] || product.mainImage || defaultImages.fallback}
-          alt={product.name || product.title || "Producto"}
+          src={
+            product.images.length > 0
+              ? typeof product.images[0] === "string"
+                ? product.images[0]
+                : product.images[0].image_url
+              : defaultImages.fallback
+          }
+          alt={product.title}
           style={{ height: "200px", objectFit: "cover" }}
           onError={handleImageError}
         />
@@ -94,9 +106,9 @@ const ProductCard = ({ product, myProducts = false }) => {
         <Card.Text className="text-primary fw-bold">${product.price}</Card.Text>
         {(ratingInfo.rating > 0 || ratingInfo.total > 0) && (
           <div className="mb-2">
-            <UserRating 
-              averageRating={ratingInfo.rating} 
-              totalRatings={ratingInfo.total} 
+            <UserRating
+              averageRating={ratingInfo.rating}
+              totalRatings={ratingInfo.total}
             />
           </div>
         )}

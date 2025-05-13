@@ -30,7 +30,7 @@ const DEFAULT_REGIONS = [
   { value: "losrios", label: "Los Ríos" },
   { value: "loslagos", label: "Los Lagos" },
   { value: "aysen", label: "Aysén" },
-  { value: "magallanes", label: "Magallanes" }
+  { value: "magallanes", label: "Magallanes" },
 ];
 
 const Profile = () => {
@@ -48,18 +48,17 @@ const Profile = () => {
   }, [user]);
 
   useEffect(() => {
-    console.log("[Profile.jsx] Iniciando fetch de regiones...");
     async function fetchRegions() {
       try {
-        console.log("[Profile.jsx] Llamando a metadataService.getRegions...");
         const regionsData = await metadataService.getRegions();
-        console.log("[Profile.jsx] Regiones recibidas:", regionsData);
-        
-        if (Array.isArray(regionsData) && regionsData.length > 0) { 
+
+        if (Array.isArray(regionsData) && regionsData.length > 0) {
           setRegions(regionsData);
-          console.log("[Profile.jsx] Estado 'regions' actualizado con datos del servidor:", regionsData);
         } else {
-          console.warn("Advertencia: Usando regiones por defecto", DEFAULT_REGIONS);
+          console.warn(
+            "Advertencia: Usando regiones por defecto",
+            DEFAULT_REGIONS
+          );
           setRegions(DEFAULT_REGIONS);
         }
       } catch (error) {
@@ -68,10 +67,9 @@ const Profile = () => {
         setRegions(DEFAULT_REGIONS);
       } finally {
         setLoadingRegions(false);
-        console.log("[Profile.jsx] Fetch de regiones finalizado. loadingRegions: false, regions.length:", regions.length);
       }
     }
-    
+
     fetchRegions();
   }, []);
 
@@ -93,8 +91,6 @@ const Profile = () => {
       toast.error("Error al cerrar sesión. Intenta nuevamente.");
     }
   };
-
-  console.log("[Profile.jsx] Renderizando con regions =", regions);
 
   return (
     <Container className="py-5 profile-contain">

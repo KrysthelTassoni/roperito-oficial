@@ -11,6 +11,8 @@ import { IoClose } from "react-icons/io5";
 import { CATEGORY_OPTIONS, SIZE_OPTIONS } from "../../constants/selectOptions";
 import { productService } from "../../services/productService";
 import { metadataService } from "../../services";
+import Loading from "../../components/Loading/Loading";
+import CustomModal from "../../components/CustomModal/CustomModal";
 
 const CreateProduct = () => {
   const location = useLocation();
@@ -32,13 +34,13 @@ const CreateProduct = () => {
   );
   const [categories, setCategories] = useState([]);
   const [size, setsize] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const getMetadata = async () => {
       try {
         const { categories } = await metadataService.getCategories();
         const { sizes } = await metadataService.getSizes();
-        console.log("categoria ", categories);
         setCategories(categories);
         setsize(sizes);
       } catch (error) {}
@@ -70,20 +72,28 @@ const CreateProduct = () => {
 
   const onSubmit = async (data) => {
     try {
-      // Transformar imágenes a array de strings si es necesario
-      const images = selectedImages.map((img) => img.url);
+      setLoading(true);
+      const images = selectedImages.map((img, index) => ({
+        file: img.file,
+        is_main: index === 0,
+      }));
+
       const productData = { ...data, images };
+
       if (productToEdit) {
         await productService.update(productToEdit.id, productData);
         toast.success("¡Producto editado exitosamente!");
+        setLoading(false);
       } else {
         await productService.create(productData);
         toast.success("¡Producto creado exitosamente!");
+        setLoading(false);
       }
+
       navigate("/gallery");
     } catch (error) {
-      if (error.response && error.response.data && error.response.data.error) {
-        toast.error(error.response.data.error);
+      if (error.response && error.response.data?.details?.[0]?.msg) {
+        toast.error(error.response.data.details[0].msg);
       } else {
         toast.error("Ocurrió un error. Intenta nuevamente.");
       }
@@ -151,7 +161,7 @@ const CreateProduct = () => {
                       onChange={handleSelectChange}
                       options={size}
                       placeholder="Selecciona una talla"
-                      name="size"
+                      name="size_id"
                     />
                     {errors.size && (
                       <Form.Text className="text-danger">
@@ -168,7 +178,7 @@ const CreateProduct = () => {
                       onChange={handleSelectChange}
                       options={categories}
                       placeholder="Selecciona una categoría"
-                      name="category"
+                      name="category_id"
                     />
                     {errors.category && (
                       <Form.Text className="text-danger">
@@ -285,6 +295,11 @@ const CreateProduct = () => {
                   </div>
                 )}
               </Form.Group>
+              {loading && (
+                <CustomModal showModal={loading} isLoading>
+                  <Loading text="Creando publicación" />
+                </CustomModal>
+              )}
               <div className="d-grid">
                 <CustomButton
                   title="Publicar"

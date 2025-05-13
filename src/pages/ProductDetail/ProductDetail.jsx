@@ -1,10 +1,4 @@
-import {
-  Container,
-  Row,
-  Col,
-  Badge,
-  Carousel,
-} from "react-bootstrap";
+import { Container, Row, Col, Badge, Carousel } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { FaStar } from "react-icons/fa";
@@ -27,6 +21,8 @@ const ProductDetail = () => {
   useEffect(() => {
     try {
       const foundProduct = products.find((p) => p.id === id);
+
+      console.log("productos obtenidos: ", foundProduct);
       if (foundProduct) {
         setProduct(foundProduct);
       }
@@ -53,7 +49,7 @@ const ProductDetail = () => {
 
       <Row className="mt-4">
         <Col md={6} className="mb-4">
-          {product.images && product.images.length > 1 && (
+          {product.images.length > 1 ? (
             <>
               <Carousel
                 variant="dark"
@@ -88,13 +84,21 @@ const ProductDetail = () => {
                 ))}
               </div>
             </>
+          ) : (
+            <div className="single-image-container">
+              <img
+                className="carousel-image"
+                src={product.images[0]}
+                alt="Imagen única del producto"
+              />
+            </div>
           )}
         </Col>
 
         <Col md={6}>
           <div className="product-header">
             <div>
-              <h1 className="mb-3">{product.name || product.title}</h1>
+              <h1 className="mb-3">{product.title}</h1>
               <div className="status-container">
                 <BsCircleFill
                   className={`status-icon ${
@@ -117,10 +121,10 @@ const ProductDetail = () => {
 
           <div className="product-badges">
             <Badge bg="light" text="dark" className="product-badge">
-              Talla: {product.size}
+              Talla: {product.size_name}
             </Badge>
             <Badge bg="light" text="dark">
-              {product.category}
+              {product.category_name}
             </Badge>
           </div>
 
@@ -131,11 +135,11 @@ const ProductDetail = () => {
 
           <div className="product-section">
             <h5>Vendedor</h5>
-            <p className="mb-2">{product.seller.name}</p>
+            <p className="mb-2">{product.seller_name}</p>
             <div className="seller-rating">
               <FaStar className="star-icon" />
               <span>
-                {product.seller.rating} ({product.seller.totalRatings})
+                {product.seller?.rating} ({product.seller?.totalRatings})
               </span>
             </div>
           </div>
@@ -157,10 +161,10 @@ const ProductDetail = () => {
         variant="danger"
       >
         <p>
-          <strong>Teléfono:</strong> {product.seller.phone}
+          <strong>Teléfono:</strong> {product.seller?.phone}
         </p>
         <p>
-          <strong>Email:</strong> {product.seller.email}
+          <strong>Email:</strong> {product.seller?.email}
         </p>
       </CustomModal>
     </Container>

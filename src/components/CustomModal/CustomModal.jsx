@@ -12,6 +12,7 @@ export default function CustomModal({
   textButtonConfirm = null,
   textButtonCancel = "Cancelar",
   variant = "outline-primary",
+  isLoading = false,
 }) {
   return (
     <Modal
@@ -26,12 +27,15 @@ export default function CustomModal({
       </Modal.Header>
       <Modal.Body className="custom-modal-body">{children}</Modal.Body>
       <Modal.Footer className="custom-modal-footer">
-        <CustomButton
-          title={textButtonCancel}
-          onClick={closeModal}
-          variant={variant}
-          style="ms-2"
-        />
+        {!isLoading && (
+          <CustomButton
+            title={textButtonCancel}
+            onClick={closeModal}
+            variant={variant}
+            style="ms-2"
+          />
+        )}
+
         {confirm && (
           <CustomButton
             title={textButtonConfirm}

@@ -12,20 +12,17 @@ export const AuthProvider = ({ children }) => {
     try {
       const token = localStorage.getItem("token");
       if (token) {
-        console.log("[AuthContext] Obteniendo perfil de usuario con token:", token.substring(0, 15) + "...");
         const userData = await userService.getProfile(token);
-        console.log("[AuthContext] Datos del usuario recibidos:", userData);
-        
+
         // Comprobar la estructura de los datos
         if (userData.user) {
-          console.log("[AuthContext] Propiedades del usuario:", Object.keys(userData.user));
           if (userData.user.address) {
             console.log("[AuthContext] Objeto address:", userData.user.address);
           } else {
             console.log("[AuthContext] El usuario no tiene objeto address");
           }
         }
-        
+
         setUser(userData);
         setIsAuthenticated(true);
       }
@@ -40,7 +37,6 @@ export const AuthProvider = ({ children }) => {
   }, [refresh]);
 
   const login = (userData, token) => {
-    // console.log("que recibe data: ", userData);
     setUser(userData);
     setIsAuthenticated(true);
     localStorage.setItem("token", token);
