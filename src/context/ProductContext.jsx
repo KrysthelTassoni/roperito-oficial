@@ -1,7 +1,8 @@
 import { createContext, useState, useContext, useEffect } from "react";
 import { AllProducts, userProfile } from "../config/data";
 import { useAuth } from "./AuthContext";
-import { productService } from "../services";
+import { favoriteService, productService } from "../services";
+import { toast } from "react-toastify";
 
 const ProductContext = createContext();
 
@@ -16,7 +17,7 @@ function useProducts() {
 
 // Exportar el Provider como una función nombrada
 function ProductProvider({ children }) {
-  const { user } = useAuth();
+  const { user, refreshAuth, setRefreshAuth } = useAuth();
   const [products, setProducts] = useState(AllProducts);
   const [searchResults, setSearchResults] = useState(null);
   const [favorites, setFavorites] = useState(
@@ -102,12 +103,29 @@ function ProductProvider({ children }) {
     return () => clearTimeout(filterTimer);
   }, [filters, products]);
 
-  const addToFavorites = (product) => {
-    setFavorites((prev) => [...prev, product]);
+  const addToFavorites = async (product) => {
+    try {
+      const response = await favoriteService.add(product.id);
+      setFavorites((prev) => [...prev, product]);
+      setRefreshAuth(!refreshAuth);
+      toast.success("Producto añadido a favorito!");
+    } catch (error) {
+      console.error("error al agregar a favoritos", error);
+      toast.error(error.response.data.error);
+    }
   };
 
-  const removeFromFavorites = (productId) => {
-    setFavorites((prev) => prev.filter((p) => p.id !== productId));
+  const removeFromFavorites = async (productId) => {
+    console.log("remover id", productId);
+    try {
+      const response = await favoriteService.remove(productId);
+      setFavorites((prev) => prev.filter((p) => p.id !== productId));
+      setRefreshAuth(!refreshAuth);
+      toast.success("Producto eliminado de favorito!");
+    } catch (error) {
+      console.log("error al remover de favoritos", error);
+      toast.error(error.response.data.error);
+    }
   };
 
   const updateFilters = (newFilters) => {

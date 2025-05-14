@@ -42,8 +42,6 @@ const CreateProduct = () => {
     })) || []
   );
 
-  console.log(selectedImages);
-
   const [categories, setCategories] = useState([]);
   const [size, setsize] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -107,7 +105,7 @@ const CreateProduct = () => {
 
       navigate("/gallery");
     } catch (error) {
-      toast.error("Ocurrió un error. Intenta nuevamente.");
+      toast.error(error.response.data.details[0].msg);
     } finally {
       setLoading(false);
     }

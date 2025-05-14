@@ -45,7 +45,6 @@ export const productService = {
   },
 
   update: async (id, productData) => {
-    console.log("producto a enviar para editar: ", productData);
     // 1. Actualizar los datos básicos
     const fieldsToUpdate = {
       title: productData.title,
@@ -90,6 +89,15 @@ export const productService = {
   delete: async (id) => {
     const response = await apiClient.delete(
       API_CONFIG.ENDPOINTS.PRODUCTS.DELETE(id)
+    );
+    return response.data;
+  },
+
+  status: async (id, status) => {
+    console.log("se recibe id", id);
+    const response = await apiClient.patch(
+      API_CONFIG.ENDPOINTS.PRODUCTS.STATUS(id),
+      { status }
     );
     return response.data;
   },

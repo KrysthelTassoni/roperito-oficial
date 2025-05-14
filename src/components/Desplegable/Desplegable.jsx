@@ -1,12 +1,21 @@
 import React, { useState } from "react";
 import { ButtonGroup, Dropdown } from "react-bootstrap";
 import CustomButton from "../CustomButton/CustomButton";
+import { productService } from "../../services";
 
 export default function Desplegable({ product }) {
   const [status, setStatus] = useState(product.status || "Estado");
 
-  const handleStatusChange = (status) => {
-    setStatus(status);
+  console.log(product);
+
+  const handleStatusChange = async (status) => {
+    try {
+      setStatus(status);
+      const response = await productService.status(product.id, status);
+      console.log("estado cambiado: ", response);
+    } catch (error) {
+      console.error("error al cambiar el estado", error);
+    }
   };
 
   return (
@@ -19,10 +28,10 @@ export default function Desplegable({ product }) {
         size="sm"
       />
       <Dropdown.Menu>
-        <Dropdown.Item onClick={() => handleStatusChange("Disponible")}>
+        <Dropdown.Item onClick={() => handleStatusChange("disponible")}>
           Disponible
         </Dropdown.Item>
-        <Dropdown.Item onClick={() => handleStatusChange("Vendido")}>
+        <Dropdown.Item onClick={() => handleStatusChange("vendido")}>
           Vendido
         </Dropdown.Item>
       </Dropdown.Menu>

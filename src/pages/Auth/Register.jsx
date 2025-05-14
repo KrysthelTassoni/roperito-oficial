@@ -23,13 +23,11 @@ const Register = () => {
   const onSubmit = async (data) => {
     try {
       // Aquí irá la lógica de registro cuando conectemos con el backend
-      console.log(data);
 
       const response = await authService.register(data);
 
       if (response) {
         toast.success("¡Registro exitoso!");
-        console.log("que trae response en register: ", response);
         navigate("/login");
       }
     } catch (error) {

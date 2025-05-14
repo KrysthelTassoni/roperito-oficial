@@ -12,7 +12,12 @@ import UserRating from "../UserRating/UserRating";
 import { productService } from "../../services";
 import Loading from "../Loading/Loading";
 
-const ProductCard = ({ product, myProducts = false }) => {
+const ProductCard = ({
+  product,
+  myProducts = false,
+  isFavorite = false,
+  isGallery = false,
+}) => {
   const { isAuthenticated, setRefreshAuth, refreshAuth } = useAuth();
   const navigation = useNavigate();
 
@@ -22,7 +27,6 @@ const ProductCard = ({ product, myProducts = false }) => {
   const handleImageError = (e) => {
     e.target.src = defaultImages.fallback;
   };
-  console.log("Mis Productos: ", product);
 
   const handleEdit = () => {
     navigation("/create-product", {
@@ -39,7 +43,6 @@ const ProductCard = ({ product, myProducts = false }) => {
       setLoading(true);
       const response = await productService.delete(product.id);
       setRefreshAuth(!refreshAuth);
-      console.log("producto eliminado ", response);
     } catch (error) {
       console.error(error);
     }
@@ -73,7 +76,9 @@ const ProductCard = ({ product, myProducts = false }) => {
         <Card.Img
           variant="top"
           src={
-            product.images.length > 0
+            isFavorite
+              ? product.image_url
+              : product.images?.length > 0
               ? typeof product.images[0] === "string"
                 ? product.images[0]
                 : product.images[0].image_url
@@ -103,7 +108,9 @@ const ProductCard = ({ product, myProducts = false }) => {
               />
             </>
           ) : (
-            isAuthenticated && <FavoriteButton product={product} />
+            isAuthenticated && (
+              <FavoriteButton product={product} isGallery={isGallery} />
+            )
           )}
         </div>
       </div>

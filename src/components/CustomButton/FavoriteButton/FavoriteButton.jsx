@@ -4,21 +4,26 @@ import { useProducts } from "../../../context/ProductContext";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { Button } from "react-bootstrap";
 import "./FavoriteButton.css";
-import { toast } from "react-toastify";
 
-export default function FavoriteButton({ product }) {
+export default function FavoriteButton({ product, isGallery = false }) {
   const { isAuthenticated } = useAuth();
   const { favorites, addToFavorites, removeFromFavorites } = useProducts();
 
-  const isFavorite = favorites.some((fav) => fav.id === product.id);
+  const isFavorite = isGallery
+    ? favorites.some((fav) => fav.product_id === product.id)
+    : favorites.some((fav) => fav.id === product.id);
+
+  if (!isFavorite) {
+    console.log("product ", product);
+    console.log("favorite ", favorites[0]);
+  }
 
   const handleFavoriteClick = () => {
     if (!isAuthenticated) return;
     if (isFavorite) {
-      removeFromFavorites(product.id);
+      removeFromFavorites(product.product_id);
     } else {
       addToFavorites(product);
-      toast.success("Producto añadido a favorito!");
     }
   };
 

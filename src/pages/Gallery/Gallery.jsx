@@ -14,8 +14,6 @@ import { toast } from "react-toastify";
 const Gallery = () => {
   const { products, filters, updateFilters } = useProducts();
 
-  console.log("desde gallery: ", products);
-
   const handleFilterChange = (field, value) => {
     try {
       updateFilters({ [field]: value });
@@ -70,11 +68,14 @@ const Gallery = () => {
 
       {/* Grid de productos */}
       <Row xs={1} md={2} lg={3} className="g-4">
-        {products.map((product) => (
-          <Col key={product.id}>
-            <ProductCard product={product} />
-          </Col>
-        ))}
+        {products.map(
+          (product) =>
+            product.status !== "vendido" && (
+              <Col key={product.id}>
+                <ProductCard product={product} isGallery />
+              </Col>
+            )
+        )}
       </Row>
     </Container>
   );

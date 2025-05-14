@@ -171,7 +171,7 @@ const Profile = () => {
                     {user.favorites.length > 0 ? (
                       user.favorites.map((product) => (
                         <Col key={product.id}>
-                          <ProductCard product={product} />
+                          <ProductCard product={product} isFavorite />
                         </Col>
                       ))
                     ) : (

@@ -22,7 +22,6 @@ const ProductDetail = () => {
     try {
       const foundProduct = products.find((p) => p.id === id);
 
-      console.log("productos obtenidos: ", foundProduct);
       if (foundProduct) {
         setProduct(foundProduct);
       }
