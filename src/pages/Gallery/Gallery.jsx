@@ -14,6 +14,8 @@ import { toast } from "react-toastify";
 const Gallery = () => {
   const { products, filters, updateFilters } = useProducts();
 
+  console.log("desde gallery: ", products);
+
   const handleFilterChange = (field, value) => {
     try {
       updateFilters({ [field]: value });

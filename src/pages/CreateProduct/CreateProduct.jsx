@@ -13,11 +13,15 @@ import { productService } from "../../services/productService";
 import { metadataService } from "../../services";
 import Loading from "../../components/Loading/Loading";
 import CustomModal from "../../components/CustomModal/CustomModal";
+import { useProducts } from "../../context/ProductContext";
+import { useAuth } from "../../context/AuthContext";
 
 const CreateProduct = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const productToEdit = location.state?.product || null;
+  const { setRefresh, refresh } = useProducts();
+  const { setRefreshAuth, refreshAuth } = useAuth();
 
   const {
     register,
@@ -30,8 +34,16 @@ const CreateProduct = () => {
   });
 
   const [selectedImages, setSelectedImages] = useState(
-    productToEdit?.images?.map((url) => ({ url })) || []
+    productToEdit?.images?.map((img) => ({
+      id: img.id,
+      image_url: img.image_url,
+      is_main: img.is_main,
+      order: img.order,
+    })) || []
   );
+
+  console.log(selectedImages);
+
   const [categories, setCategories] = useState([]);
   const [size, setsize] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -58,7 +70,7 @@ const CreateProduct = () => {
 
     const previews = files.map((file) => ({
       file,
-      url: URL.createObjectURL(file),
+      image_url: URL.createObjectURL(file),
     }));
 
     setSelectedImages((prev) => [...prev, ...previews]);
@@ -73,9 +85,10 @@ const CreateProduct = () => {
   const onSubmit = async (data) => {
     try {
       setLoading(true);
+
       const images = selectedImages.map((img, index) => ({
         file: img.file,
-        is_main: index === 0,
+        image_url: img.image_url,
       }));
 
       const productData = { ...data, images };
@@ -83,20 +96,20 @@ const CreateProduct = () => {
       if (productToEdit) {
         await productService.update(productToEdit.id, productData);
         toast.success("¡Producto editado exitosamente!");
-        setLoading(false);
+        setRefresh(!refresh);
+        setRefreshAuth(!refreshAuth);
       } else {
         await productService.create(productData);
         toast.success("¡Producto creado exitosamente!");
-        setLoading(false);
+        setRefresh(!refresh);
+        setRefreshAuth(!refreshAuth);
       }
 
       navigate("/gallery");
     } catch (error) {
-      if (error.response && error.response.data?.details?.[0]?.msg) {
-        toast.error(error.response.data.details[0].msg);
-      } else {
-        toast.error("Ocurrió un error. Intenta nuevamente.");
-      }
+      toast.error("Ocurrió un error. Intenta nuevamente.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -190,10 +203,9 @@ const CreateProduct = () => {
               </Row>
 
               <Form.Group className="mb-3">
-                <Form.Label>Precio (USD)</Form.Label>
+                <Form.Label>Precio</Form.Label>
                 <Form.Control
                   type="number"
-                  step="0.01"
                   min="0"
                   {...register("price", {
                     required: "El precio es requerido",
@@ -254,7 +266,7 @@ const CreateProduct = () => {
                         }}
                       >
                         <img
-                          src={img.url}
+                          src={img.image_url}
                           alt={`preview-${index}`}
                           style={{
                             width: "100%",
@@ -295,11 +307,7 @@ const CreateProduct = () => {
                   </div>
                 )}
               </Form.Group>
-              {loading && (
-                <CustomModal showModal={loading} isLoading>
-                  <Loading text="Creando publicación" />
-                </CustomModal>
-              )}
+              {loading && <Loading text="Creando publicación" show={loading} />}
               <div className="d-grid">
                 <CustomButton
                   title="Publicar"

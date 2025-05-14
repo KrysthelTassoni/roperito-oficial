@@ -16,15 +16,6 @@ export const productService = {
       formData.append("images", img.file);
     });
 
-    // Agrega los valores de is_main y orden en paralelo como arrays
-    const isMainArray = productData.images.map((img) => img.is_main);
-    formData.append("is_main", JSON.stringify(isMainArray));
-
-    // [Opcional] Ver el contenido en consola
-    for (let pair of formData.entries()) {
-      console.log(pair[0], pair[1]);
-    }
-
     const response = await apiClient.post(
       API_CONFIG.ENDPOINTS.PRODUCTS.CREATE,
       formData,
@@ -53,13 +44,47 @@ export const productService = {
     return response.data;
   },
 
-  update: async (id, updateData) => {
-    // updateData puede tener: title, description, price, status
-    const response = await apiClient.put(
+  update: async (id, productData) => {
+    console.log("producto a enviar para editar: ", productData);
+    // 1. Actualizar los datos básicos
+    const fieldsToUpdate = {
+      title: productData.title,
+      description: productData.description,
+      price: productData.price,
+      size_id: productData.size_id,
+      category_id: productData.category_id,
+      status: productData.status,
+    };
+
+    await apiClient.put(
       API_CONFIG.ENDPOINTS.PRODUCTS.UPDATE(id),
-      updateData
+      fieldsToUpdate
     );
-    return response.data;
+
+    // 2. Preparar imágenes
+    const newImages = productData.images?.filter(
+      (img) => img?.file instanceof File
+    );
+
+    const existingImageUrls = productData.images
+      ?.filter((img) => typeof img === "string" || img?.image_url)
+      .map((img) => (typeof img === "string" ? img : img.image_url));
+
+    const formData = new FormData();
+    newImages.forEach((img) => {
+      formData.append("images", img.file);
+    });
+    formData.append("existing_images", JSON.stringify(existingImageUrls));
+
+    await apiClient.put(
+      API_CONFIG.ENDPOINTS.PRODUCTS.UPDATE_IMAGES(id),
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      }
+    );
   },
 
   delete: async (id) => {

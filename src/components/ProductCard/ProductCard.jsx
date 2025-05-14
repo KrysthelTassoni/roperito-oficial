@@ -10,16 +10,19 @@ import { useState } from "react";
 import CustomModal from "../CustomModal/CustomModal";
 import UserRating from "../UserRating/UserRating";
 import { productService } from "../../services";
+import Loading from "../Loading/Loading";
 
 const ProductCard = ({ product, myProducts = false }) => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, setRefreshAuth, refreshAuth } = useAuth();
   const navigation = useNavigate();
 
   const [showConfirm, setShowConfirm] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleImageError = (e) => {
     e.target.src = defaultImages.fallback;
   };
+  console.log("Mis Productos: ", product);
 
   const handleEdit = () => {
     navigation("/create-product", {
@@ -33,12 +36,15 @@ const ProductCard = ({ product, myProducts = false }) => {
 
   const confirmDelete = async () => {
     try {
+      setLoading(true);
       const response = await productService.delete(product.id);
+      setRefreshAuth(!refreshAuth);
       console.log("producto eliminado ", response);
     } catch (error) {
       console.error(error);
     }
     setShowConfirm(false);
+    setLoading(false);
   };
 
   const cancelDelete = () => {
@@ -129,6 +135,7 @@ const ProductCard = ({ product, myProducts = false }) => {
         confirm={confirmDelete}
         closeModal={cancelDelete}
       />
+      {loading && <Loading show={loading} text="Eliminando producto" />}
     </Card>
   );
 };

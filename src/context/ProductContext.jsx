@@ -23,6 +23,7 @@ function ProductProvider({ children }) {
     user?.favorites || userProfile[0].favorites || []
   );
   const [loading, setLoading] = useState(false);
+  const [refresh, setRefresh] = useState(false);
   const [filters, setFilters] = useState({
     category: "",
     size: "",
@@ -35,14 +36,20 @@ function ProductProvider({ children }) {
     const getAllProducts = async () => {
       try {
         const response = await productService.getAll();
-        setProducts(response);
+        const formattedProducts = response.map((product) => ({
+          ...product,
+          images: [...product.images].reverse(), // nueva imagen primero
+        }));
+        setProducts(formattedProducts);
+
+        setProducts(formattedProducts);
       } catch (error) {
         console.error(error);
       }
     };
 
     getAllProducts();
-  }, []);
+  }, [refresh]);
 
   // Actualizar favoritos cuando cambia el usuario
   useEffect(() => {
@@ -121,6 +128,8 @@ function ProductProvider({ children }) {
         filters,
         updateFilters,
         isSearching: !!searchResults,
+        refresh,
+        setRefresh,
       }}
     >
       {children}

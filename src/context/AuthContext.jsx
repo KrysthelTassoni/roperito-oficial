@@ -6,7 +6,7 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [refresh, setRefresh] = useState(false);
+  const [refreshAuth, setRefreshAuth] = useState(false);
 
   const fetchUserProfile = async () => {
     try {
@@ -34,7 +34,7 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     fetchUserProfile();
-  }, [refresh]);
+  }, [refreshAuth]);
 
   const login = (userData, token) => {
     setUser(userData);
@@ -56,8 +56,8 @@ export const AuthProvider = ({ children }) => {
         login,
         logout,
         setUser,
-        setRefresh,
-        refresh,
+        setRefreshAuth,
+        refreshAuth,
         fetchUserProfile,
       }}
     >
