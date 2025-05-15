@@ -1,7 +1,7 @@
 import { createContext, useState, useContext, useEffect } from "react";
 import { AllProducts, userProfile } from "../config/data";
 import { useAuth } from "./AuthContext";
-import { favoriteService, productService } from "../services";
+import { favoriteService, metadataService, productService } from "../services";
 import { toast } from "react-toastify";
 
 const ProductContext = createContext();
@@ -18,13 +18,15 @@ function useProducts() {
 // Exportar el Provider como una función nombrada
 function ProductProvider({ children }) {
   const { user, refreshAuth, setRefreshAuth } = useAuth();
-  const [products, setProducts] = useState(AllProducts);
+  const [products, setProducts] = useState([]);
   const [searchResults, setSearchResults] = useState(null);
   const [favorites, setFavorites] = useState(
     user?.favorites || userProfile[0].favorites || []
   );
   const [loading, setLoading] = useState(false);
   const [refresh, setRefresh] = useState(false);
+  const [categories, setCategories] = useState([]);
+  const [sizes, setsizes] = useState([]);
   const [filters, setFilters] = useState({
     category: "",
     size: "",
@@ -37,13 +39,8 @@ function ProductProvider({ children }) {
     const getAllProducts = async () => {
       try {
         const response = await productService.getAll();
-        const formattedProducts = response.map((product) => ({
-          ...product,
-          images: [...product.images].reverse(), // nueva imagen primero
-        }));
-        setProducts(formattedProducts);
 
-        setProducts(formattedProducts);
+        setProducts(response);
       } catch (error) {
         console.error(error);
       }
@@ -51,6 +48,21 @@ function ProductProvider({ children }) {
 
     getAllProducts();
   }, [refresh]);
+
+  useEffect(() => {
+    const getMetadata = async () => {
+      try {
+        const { categories } = await metadataService.getCategories();
+        const { sizes } = await metadataService.getSizes();
+        setCategories(categories);
+        setsizes(sizes);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    getMetadata();
+  }, []);
 
   // Actualizar favoritos cuando cambia el usuario
   useEffect(() => {
@@ -69,8 +81,8 @@ function ProductProvider({ children }) {
   const filterProducts = (productsToFilter) => {
     return productsToFilter.filter((product) => {
       const matchesCategory =
-        !filters.category || product.category === filters.category;
-      const matchesSize = !filters.size || product.size === filters.size;
+        !filters.category || product.category_id === filters.category;
+      const matchesSize = !filters.size || product.size_id === filters.size;
       const matchesPrice =
         !filters.price || isInPriceRange(product.price, filters.price);
       const matchesSearch =
@@ -116,7 +128,6 @@ function ProductProvider({ children }) {
   };
 
   const removeFromFavorites = async (productId) => {
-    console.log("remover id", productId);
     try {
       const response = await favoriteService.remove(productId);
       setFavorites((prev) => prev.filter((p) => p.id !== productId));
@@ -148,6 +159,8 @@ function ProductProvider({ children }) {
         isSearching: !!searchResults,
         refresh,
         setRefresh,
+        categories,
+        sizes,
       }}
     >
       {children}

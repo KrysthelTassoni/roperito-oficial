@@ -16,7 +16,7 @@ export default function FavoriteButton({ product, isGallery = false }) {
   const handleFavoriteClick = () => {
     if (!isAuthenticated) return;
     if (isFavorite) {
-      removeFromFavorites(product.product_id);
+      removeFromFavorites(isGallery ? product.id : product.product_id); //se pasa el id del producto NO el id de la tabla favoritos
     } else {
       addToFavorites(product);
     }

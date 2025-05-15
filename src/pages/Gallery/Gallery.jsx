@@ -12,7 +12,7 @@ import {
 import { toast } from "react-toastify";
 
 const Gallery = () => {
-  const { products, filters, updateFilters } = useProducts();
+  const { products, filters, updateFilters, categories, sizes } = useProducts();
 
   const handleFilterChange = (field, value) => {
     try {
@@ -41,7 +41,7 @@ const Gallery = () => {
           <FilterSelect
             value={filters.category}
             onChange={handleFilterChange}
-            options={CATEGORY_OPTIONS}
+            options={categories}
             placeholder="Prenda"
             name="category"
           />
@@ -50,7 +50,7 @@ const Gallery = () => {
           <FilterSelect
             value={filters.size}
             onChange={handleFilterChange}
-            options={SIZE_OPTIONS}
+            options={sizes}
             placeholder="Talla"
             name="size"
           />

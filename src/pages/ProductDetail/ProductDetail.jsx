@@ -21,8 +21,9 @@ const ProductDetail = () => {
   useEffect(() => {
     try {
       const foundProduct = products.find((p) => p.id === id);
-
       if (foundProduct) {
+        // Invertir las imágenes antes de guardarlas
+
         setProduct(foundProduct);
       }
       setLoading(false);
@@ -56,12 +57,12 @@ const ProductDetail = () => {
                 activeIndex={activeIndex}
                 onSelect={(selectedIndex) => setActiveIndex(selectedIndex)}
               >
-                {product.images.map((imgUrl, index) => (
+                {product.images.map((img, index) => (
                   <Carousel.Item key={index}>
                     <div className="carousel-container">
                       <img
                         className="carousel-image"
-                        src={imgUrl}
+                        src={img.image_url}
                         alt={`Imagen ${index + 1}`}
                       />
                     </div>
@@ -70,10 +71,10 @@ const ProductDetail = () => {
               </Carousel>
 
               <div className="thumbnail-container">
-                {product.images.map((thumbUrl, index) => (
+                {product.images.map((img, index) => (
                   <img
                     key={index}
-                    src={thumbUrl}
+                    src={img.image_url}
                     alt={`Miniatura ${index + 1}`}
                     onClick={() => setActiveIndex(index)}
                     className={`thumbnail-image ${
@@ -87,7 +88,7 @@ const ProductDetail = () => {
             <div className="single-image-container">
               <img
                 className="carousel-image"
-                src={product.images[0]}
+                src={product.images[0].image_url}
                 alt="Imagen única del producto"
               />
             </div>
@@ -134,7 +135,7 @@ const ProductDetail = () => {
 
           <div className="product-section">
             <h5>Vendedor</h5>
-            <p className="mb-2">{product.seller_name}</p>
+            <p className="mb-2">{product.seller.name}</p>
             <div className="seller-rating">
               <FaStar className="star-icon" />
               <span>
@@ -160,7 +161,7 @@ const ProductDetail = () => {
         variant="danger"
       >
         <p>
-          <strong>Teléfono:</strong> {product.seller?.phone}
+          <strong>Teléfono:</strong> {product.seller?.phone_number}
         </p>
         <p>
           <strong>Email:</strong> {product.seller?.email}

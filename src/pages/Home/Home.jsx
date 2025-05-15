@@ -68,11 +68,14 @@ const Home = () => {
           </div>
         ) : (
           <Row xs={1} md={2} lg={3} className="g-4">
-            {products.map((product) => (
-              <Col key={product.id}>
-                <ProductCard product={product} isGallery />
-              </Col>
-            ))}
+            {products.map(
+              (product) =>
+                product.status !== "vendido" && (
+                  <Col key={product.id}>
+                    <ProductCard product={product} isGallery />
+                  </Col>
+                )
+            )}
           </Row>
         )}
       </Container>

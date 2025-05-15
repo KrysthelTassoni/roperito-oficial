@@ -2,17 +2,21 @@ import React, { useState } from "react";
 import { ButtonGroup, Dropdown } from "react-bootstrap";
 import CustomButton from "../CustomButton/CustomButton";
 import { productService } from "../../services";
+import { toast } from "react-toastify";
 
 export default function Desplegable({ product }) {
   const [status, setStatus] = useState(product.status || "Estado");
-
-  console.log(product);
 
   const handleStatusChange = async (status) => {
     try {
       setStatus(status);
       const response = await productService.status(product.id, status);
-      console.log("estado cambiado: ", response);
+      if (response.status === "vendido") {
+        toast.success("Producto vendido!");
+      } else {
+        toast.success("Producto disponible!");
+      }
+      toast.success();
     } catch (error) {
       console.error("error al cambiar el estado", error);
     }

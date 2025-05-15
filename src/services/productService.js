@@ -94,7 +94,6 @@ export const productService = {
   },
 
   status: async (id, status) => {
-    console.log("se recibe id", id);
     const response = await apiClient.patch(
       API_CONFIG.ENDPOINTS.PRODUCTS.STATUS(id),
       { status }

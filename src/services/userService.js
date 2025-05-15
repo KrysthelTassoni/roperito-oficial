@@ -26,8 +26,6 @@ export const userService = {
       },
     };
 
-    console.log("que envia data", userData);
-
     try {
       await apiClient.put(API_CONFIG.ENDPOINTS.USERS.UPDATE_PROFILE, userData);
     } catch (error) {

@@ -20,7 +20,7 @@ const CreateProduct = () => {
   const location = useLocation();
   const navigate = useNavigate();
   const productToEdit = location.state?.product || null;
-  const { setRefresh, refresh } = useProducts();
+  const { setRefresh, refresh, categories, sizes } = useProducts();
   const { setRefreshAuth, refreshAuth } = useAuth();
 
   const {
@@ -42,22 +42,7 @@ const CreateProduct = () => {
     })) || []
   );
 
-  const [categories, setCategories] = useState([]);
-  const [size, setsize] = useState([]);
   const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    const getMetadata = async () => {
-      try {
-        const { categories } = await metadataService.getCategories();
-        const { sizes } = await metadataService.getSizes();
-        setCategories(categories);
-        setsize(sizes);
-      } catch (error) {}
-    };
-
-    getMetadata();
-  }, []);
 
   const handleSelectChange = (field, value) => {
     setValue(field, value);
@@ -168,9 +153,9 @@ const CreateProduct = () => {
                   <Form.Group>
                     <Form.Label>Talla</Form.Label>
                     <FilterSelect
-                      value={watch("size") || ""}
+                      value={watch("size_id") || ""}
                       onChange={handleSelectChange}
-                      options={size}
+                      options={sizes}
                       placeholder="Selecciona una talla"
                       name="size_id"
                     />
@@ -185,7 +170,7 @@ const CreateProduct = () => {
                   <Form.Group>
                     <Form.Label>Categoría</Form.Label>
                     <FilterSelect
-                      value={watch("category") || ""}
+                      value={watch("category_id") || ""}
                       onChange={handleSelectChange}
                       options={categories}
                       placeholder="Selecciona una categoría"

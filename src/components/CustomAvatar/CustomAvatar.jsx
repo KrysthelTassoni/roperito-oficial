@@ -176,7 +176,6 @@ export default function CustomAvatar({ regions, loadingRegions }) {
     }
 
     try {
-      console.log("que trae formData", formData);
       // Obtener el perfil fusionado directamente del servicio
       await userService.updateProfile(formData);
 
