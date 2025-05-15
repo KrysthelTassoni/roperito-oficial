@@ -1,0 +1,69 @@
+.how-it-works {
+    padding: 3rem 0;
+}
+
+.how-it-works .icon-container {
+    margin-bottom: 1rem;
+    transition: transform 0.3s ease;
+}
+
+.how-it-works .icon-container:hover {
+    transform: scale(1.1);
+}
+
+.how-it-works .card {
+    transition: all 0.3s ease;
+    border: none;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.how-it-works .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.how-it-works .step-card {
+    height: 100%;
+    text-align: center;
+    padding: 1.5rem;
+}
+
+.how-it-works .security-card {
+    background-color: #f8f9fa;
+    border: none;
+    padding: 1.5rem;
+    margin-top: 3rem;
+}
+
+.how-it-works .security-list li {
+    position: relative;
+    padding-left: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.how-it-works .security-list li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+.how-it-works .section-title {
+    margin-bottom: 2.5rem;
+    color: #000;
+}
+
+.how-it-works .lead {
+    font-size: 1.2rem;
+    margin-bottom: 3rem;
+}
+
+.how-it-works .icon-primary {
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}

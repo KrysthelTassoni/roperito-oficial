@@ -1,0 +1,47 @@
+.not-found {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    background: linear-gradient(135deg, var(--background-primary), var(--background-secondary));
+}
+
+.not-found img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    max-height: 500px;
+    border-radius: 12px;
+    box-shadow: var(--box-shadow);
+}
+
+.not-found .gradient-primary {
+    background: var(--gradient-primary);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.not-found .btn {
+    transition: all 0.3s ease;
+}
+
+.not-found .btn:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--box-shadow-hover);
+}
+
+@media (max-width: 768px) {
+    .not-found {
+        padding: 2rem 0;
+    }
+    .not-found .display-4 {
+        font-size: 2rem;
+    }
+    .not-found .btn {
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+    .not-found .d-flex.justify-content-center.gap-3 {
+        flex-direction: column;
+    }
+}

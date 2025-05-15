@@ -1,0 +1,8 @@
+.user-rating {
+  display: flex;
+  align-items: center;
+}
+
+.user-rating small {
+  font-size: 0.875rem;
+} 

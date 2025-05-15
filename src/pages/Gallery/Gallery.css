@@ -1,0 +1,53 @@
+.gallery {
+  min-height: 100vh;
+  background: linear-gradient(
+    135deg,
+    var(--background-primary),
+    var(--background-secondary)
+  );
+}
+
+.gallery .container {
+  max-width: 1200px;
+}
+
+.gallery h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.gallery .form-select {
+  border-radius: 10px;
+  border: 2px solid var(--border-color);
+  padding: 0.75rem 1rem;
+  transition: var(--transition);
+  background-color: white;
+}
+
+.gallery .form-select:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 0.25rem rgba(124, 77, 255, 0.15);
+}
+
+.gallery .row {
+  margin-bottom: 2rem;
+}
+
+.gallery .product-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+  padding: 1rem;
+}
+
+@media (max-width: 768px) {
+  .gallery h1 {
+    font-size: 2rem;
+  }
+  
+  .gallery .form-select {
+    margin-bottom: 1rem;
+  }
+} 
