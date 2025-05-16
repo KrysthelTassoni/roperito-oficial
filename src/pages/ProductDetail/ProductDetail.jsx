@@ -9,22 +9,34 @@ import "./ProductDetail.css";
 import CustomButton from "../../components/CustomButton/CustomButton";
 import CustomModal from "../../components/CustomModal/CustomModal";
 import { toast } from "react-toastify";
+import CustomInput from "../../components/CustomInput/CustomInput";
+import { orderService } from "../../services";
+import { useAuth } from "../../context/AuthContext";
 
 const ProductDetail = () => {
   const { id } = useParams();
   const { products } = useProducts();
+  const { user } = useAuth();
   const [showContactModal, setShowContactModal] = useState(false);
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [activeIndex, setActiveIndex] = useState(0);
+  const [selectedMessage, setSelectedMessage] = useState("");
+  const [ifSentMessage, setIfSentMessage] = useState(false);
+
+  const predefinedMessages = [
+    "¿Sigue disponible?",
+    "¿Realizas envíos?",
+    "¿Puedes hacer un descuento?",
+    "¿Dónde se puede retirar?",
+  ];
 
   useEffect(() => {
     try {
       const foundProduct = products.find((p) => p.id === id);
       if (foundProduct) {
-        // Invertir las imágenes antes de guardarlas
-
         setProduct(foundProduct);
+        verifyMessageSent(foundProduct.id);
       }
       setLoading(false);
     } catch (error) {
@@ -32,6 +44,30 @@ const ProductDetail = () => {
       toast.error("Error al cargar el producto. Inténtalo de nuevo más tarde.");
     }
   }, [id, products]);
+
+  const verifyMessageSent = async (product_id) => {
+    try {
+      const response = await orderService.ifsentMessage(product_id);
+      setIfSentMessage(response.exists);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const handleSubmitMessage = async () => {
+    try {
+      const response = await orderService.sendMessage(
+        product.id,
+        selectedMessage
+      );
+
+      toast.success(response.message);
+      setShowContactModal(false);
+    } catch (error) {
+      console.log("error al enviar el mensaje", error);
+      toast.error("Error al enviar el mensaje");
+    }
+  };
 
   if (loading) {
     return <div>Cargando producto...</div>;
@@ -143,13 +179,14 @@ const ProductDetail = () => {
               </span>
             </div>
           </div>
-
-          <CustomButton
-            title={"Contactar al Vendedor"}
-            variant="primary"
-            style="contact-button"
-            onClick={() => setShowContactModal(true)}
-          />
+          {!user.products.some((p) => p.id === product.id) && (
+            <CustomButton
+              title={"Contactar al Vendedor"}
+              variant="primary"
+              style="contact-button"
+              onClick={() => setShowContactModal(true)}
+            />
+          )}
         </Col>
       </Row>
 
@@ -159,6 +196,8 @@ const ProductDetail = () => {
         textHeader={"Información de Contacto"}
         textButtonCancel="Cerrar"
         variant="danger"
+        textButtonConfirm={"Enviar"}
+        confirm={handleSubmitMessage}
       >
         <p>
           <strong>Teléfono:</strong> {product.seller?.phone_number}
@@ -166,6 +205,28 @@ const ProductDetail = () => {
         <p>
           <strong>Email:</strong> {product.seller?.email}
         </p>
+        {!ifSentMessage && (
+          <>
+            <hr />
+            <p>
+              <strong>Mensaje rápido:</strong>
+            </p>
+
+            <div className="mb-3">
+              {predefinedMessages.map((msg, index) => (
+                <CustomButton
+                  key={index}
+                  title={msg}
+                  variant={
+                    selectedMessage === msg ? "primary" : "outline-secondary"
+                  }
+                  style="me-2 mb-2"
+                  onClick={() => setSelectedMessage(msg)}
+                />
+              ))}
+            </div>
+          </>
+        )}
       </CustomModal>
     </Container>
   );

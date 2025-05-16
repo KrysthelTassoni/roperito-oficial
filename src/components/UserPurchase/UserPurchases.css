@@ -1,0 +1,8 @@
+.text-purchases {
+  color: var(--primary-color);
+  font-weight: bold;
+}
+
+strong {
+  color: var(--tertiary-color);
+}

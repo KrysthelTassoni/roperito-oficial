@@ -4,14 +4,24 @@ import { useAuth } from "../../context/AuthContext";
 import ProductCard from "../../components/ProductCard/ProductCard";
 import CustomAvatar from "../../components/CustomAvatar/CustomAvatar";
 import "./Profile.css";
-import { BiHeart, BiLogOut } from "react-icons/bi";
+import {
+  BiDollar,
+  BiHeart,
+  BiLogOut,
+  BiNotification,
+  BiShoppingBag,
+} from "react-icons/bi";
 import { CiFolderOn } from "react-icons/ci";
 import CustomButton from "../../components/CustomButton/CustomButton";
 import { PiPlus } from "react-icons/pi";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useEffect, useRef, useState } from "react";
-import { addressService, metadataService } from "../../services";
+import { addressService, metadataService, orderService } from "../../services";
+import NotificationCard from "../../components/NotificationCard/NotificationCard";
+import { notifyUser } from "../../utils/notifyUser";
+import UserPurchases from "../../components/UserPurchase/UserPurchases";
+import UserSales from "../../components/UserSales/UserSales";
 
 // Regiones por defecto para cuando falla la carga
 
@@ -20,7 +30,7 @@ const Profile = () => {
   const navigate = useNavigate();
   const hasShownError = useRef(false);
   const [regions, setRegions] = useState(); // Inicializar con regiones por defecto
-
+  const [notifications, setNotifications] = useState([]);
   const [loadingRegions, setLoadingRegions] = useState(true);
 
   useEffect(() => {
@@ -36,7 +46,17 @@ const Profile = () => {
     };
 
     getRegions();
+    getMessages();
   }, []);
+
+  const getMessages = async () => {
+    try {
+      const response = await orderService.getMessage();
+      setNotifications(response.data);
+    } catch (error) {
+      console.error("Error al recibir mensajes", error);
+    }
+  };
 
   useEffect(() => {
     if (!user && !hasShownError.current) {
@@ -99,6 +119,21 @@ const Profile = () => {
                     <BiHeart /> Mis favoritos
                   </Nav.Link>
                 </Nav.Item>
+                <Nav.Item>
+                  <Nav.Link eventKey="notifications">
+                    <BiNotification /> Notificaciones
+                  </Nav.Link>
+                </Nav.Item>
+                <Nav.Item>
+                  <Nav.Link eventKey="sales">
+                    <BiDollar /> Mis Ventas
+                  </Nav.Link>
+                </Nav.Item>
+                <Nav.Item>
+                  <Nav.Link eventKey="shopping">
+                    <BiShoppingBag /> Mis Compras
+                  </Nav.Link>
+                </Nav.Item>
               </Nav>
             </Card.Header>
             <div className="div-publish">
@@ -156,6 +191,62 @@ const Profile = () => {
                             to="/gallery"
                             variant="primary"
                           />
+                        </div>
+                      </Col>
+                    )}
+                  </Row>
+                </Tab.Pane>
+
+                <Tab.Pane eventKey="notifications">
+                  <Row className="g-3 flex-column">
+                    {notifications.length > 0 ? (
+                      notifications.map((data) => (
+                        <Col key={data.id} className="w-100">
+                          <NotificationCard message={data} />
+                        </Col>
+                      ))
+                    ) : (
+                      <Col xs={12} className="no-products">
+                        <div className="text-center py-4">
+                          <p className="text-muted">
+                            No tienes notificaciones aún
+                          </p>
+                        </div>
+                      </Col>
+                    )}
+                  </Row>
+                </Tab.Pane>
+
+                <Tab.Pane eventKey="sales">
+                  <Row className="g-3 flex-column">
+                    {user.orders_sold.length > 0 ? (
+                      user.orders_sold.map((data) => (
+                        <Col key={data.id} className="w-100">
+                          <UserSales order={data} />
+                        </Col>
+                      ))
+                    ) : (
+                      <Col xs={12} className="no-products">
+                        <div className="text-center py-4">
+                          <p className="text-muted">No tienes ventas aún</p>
+                        </div>
+                      </Col>
+                    )}
+                  </Row>
+                </Tab.Pane>
+
+                <Tab.Pane eventKey="shopping">
+                  <Row className="g-3 flex-column">
+                    {user.orders_bought.length > 0 ? (
+                      user.orders_bought.map((data) => (
+                        <Col key={data.id} className="w-100">
+                          <UserPurchases order={data} />
+                        </Col>
+                      ))
+                    ) : (
+                      <Col xs={12} className="no-products">
+                        <div className="text-center py-4">
+                          <p className="text-muted">No tienes compras aún</p>
                         </div>
                       </Col>
                     )}

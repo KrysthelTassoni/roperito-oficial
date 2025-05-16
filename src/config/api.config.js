@@ -35,9 +35,15 @@ export const API_CONFIG = {
     },
     ORDERS: {
       BASE: "/api/orders",
+      MESSAGE: "/api/orders/message",
+      IFSENT: (product_id) =>
+        `/api/orders/messagesent?product_id=${product_id}`,
       BY_ID: (id) => `/api/orders/${id}`,
       UPDATE_STATUS: (id) => `/api/orders/${id}/status`,
       USER_ORDERS: "/api/users/orders",
+      DELETE_ORDER: (id_product) => `/api/orders/${id_product}`,
+      POTENTIALBUYERS: (product_id) =>
+        `/api/orders/potential-buyers/${product_id}`,
     },
     ADDRESS: {
       REGIONS: "/api/address/regions",

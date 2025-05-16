@@ -1,0 +1,9 @@
+.title-notification {
+  color: var(--primary-color);
+  font-weight: bold;
+}
+
+.text-time {
+  font-size: 12px;
+  color: var(--tertiary-color);
+}
