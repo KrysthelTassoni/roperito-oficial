@@ -105,7 +105,11 @@ const ProductCard = ({
             </>
           ) : (
             isAuthenticated && (
-              <FavoriteButton product={product} isGallery={isGallery} />
+              <FavoriteButton
+                product={product}
+                isGallery={isGallery}
+                isFavorite={isFavorite}
+              />
             )
           )}
         </div>

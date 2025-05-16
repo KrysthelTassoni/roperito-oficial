@@ -28,8 +28,8 @@ export default function CustomAvatar({ regions, loadingRegions }) {
 
   const [showModal, setShowModal] = useState(false);
   const [isFormReady, setIsFormReady] = useState(false);
-  const [provinces, setProvinces] = useState();
-  const [cities, setCities] = useState();
+  const [provinces, setProvinces] = useState([]);
+  const [cities, setCities] = useState([]);
 
   // Inicializar datos del formulario cuando el usuario está disponible
   useEffect(() => {
@@ -66,8 +66,11 @@ export default function CustomAvatar({ regions, loadingRegions }) {
             provinceLabel: user.address && user.address.province,
             cityLabel: user.address && user.address.city,
           };
-          setIsFormReady(true);
+
           setFormData(newFormData);
+          getProvinces(region && region.codigo);
+          getCities(province && province.codigo);
+          setIsFormReady(true);
         }
       } catch (error) {
         console.error(error);
@@ -76,6 +79,24 @@ export default function CustomAvatar({ regions, loadingRegions }) {
 
     getCurrentAddress();
   }, [user, defaultUser]);
+
+  const getProvinces = async (value) => {
+    try {
+      const provinces = await addressService.getProvinces(value);
+      setProvinces(provinces); //con esto llenamos las provincias acorde a la region seleccionada y aprovechamos de mostrar el select
+    } catch (error) {
+      console.error("error al cargar provincias", error);
+    }
+  };
+
+  const getCities = async (value) => {
+    try {
+      const cities = await addressService.getCities(value);
+      setCities(cities);
+    } catch (error) {
+      console.error("error al cargar comunas", error);
+    }
+  };
 
   const handleRegionChange = async (e) => {
     const { name, value } = e.target;
@@ -93,12 +114,7 @@ export default function CustomAvatar({ regions, loadingRegions }) {
       provinceLabel: "",
     }));
 
-    try {
-      const provinces = await addressService.getProvinces(value);
-      setProvinces(provinces); //con esto llenamos las provincias acorde a la region seleccionada y aprovechamos de mostrar el select
-    } catch (error) {
-      console.error("error al cargar provincias", error);
-    }
+    getProvinces(value);
   };
 
   const handleProvinceChange = async (e) => {
@@ -117,12 +133,7 @@ export default function CustomAvatar({ regions, loadingRegions }) {
       cityLabel: "",
     }));
 
-    try {
-      const cities = await addressService.getCities(value);
-      setCities(cities);
-    } catch (error) {
-      console.error("error al cargar comunas", error);
-    }
+    getCities(value);
   };
 
   const handleCityChange = (e) => {
@@ -272,7 +283,7 @@ export default function CustomAvatar({ regions, loadingRegions }) {
             <SelectAddress
               title={"Provincia"}
               name={"province"}
-              places={provinces ? provinces : []}
+              places={provinces}
               value={formData.province}
               onChange={handleProvinceChange}
             />
@@ -280,7 +291,7 @@ export default function CustomAvatar({ regions, loadingRegions }) {
             <SelectAddress
               title={"Comuna"}
               name={"city"}
-              places={cities ? cities : []}
+              places={cities}
               value={formData.city}
               onChange={handleCityChange}
             />

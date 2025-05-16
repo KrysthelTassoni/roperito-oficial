@@ -5,17 +5,21 @@ import { FaHeart, FaRegHeart } from "react-icons/fa";
 import { Button } from "react-bootstrap";
 import "./FavoriteButton.css";
 
-export default function FavoriteButton({ product, isGallery = false }) {
+export default function FavoriteButton({
+  product,
+  isGallery = false,
+  isFavorite = false,
+}) {
   const { isAuthenticated } = useAuth();
   const { favorites, addToFavorites, removeFromFavorites } = useProducts();
 
-  const isFavorite = isGallery
-    ? favorites.some((fav) => fav.product_id === product.id)
-    : favorites.some((fav) => fav.id === product.id);
+  const isFav = isFavorite
+    ? favorites.some((fav) => fav.id === product.id)
+    : favorites.some((fav) => fav.product_id === product.id);
 
   const handleFavoriteClick = () => {
     if (!isAuthenticated) return;
-    if (isFavorite) {
+    if (isFav) {
       removeFromFavorites(isGallery ? product.id : product.product_id); //se pasa el id del producto NO el id de la tabla favoritos
     } else {
       addToFavorites(product);
@@ -28,7 +32,7 @@ export default function FavoriteButton({ product, isGallery = false }) {
       className="p-0 btn-heart"
       onClick={handleFavoriteClick}
     >
-      {isFavorite ? <FaHeart size={24} /> : <FaRegHeart size={24} />}
+      {isFav ? <FaHeart size={24} /> : <FaRegHeart size={24} />}
     </Button>
   );
 }
