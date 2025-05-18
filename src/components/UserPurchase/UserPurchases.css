@@ -3,6 +3,15 @@
   font-weight: bold;
 }
 
-strong {
+strong,
+span {
   color: var(--tertiary-color);
+}
+
+.btn-rating {
+  position: absolute;
+}
+
+span:hover {
+  color: var(--primary-color);
 }

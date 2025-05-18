@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 import { Form } from "react-bootstrap";
 import { userProfile } from "../../config/data";
 import UserRating from "../UserRating/UserRating";
-import { addressService, userService } from "../../services";
+import { addressService, ratingService, userService } from "../../services";
 import PropTypes from "prop-types";
 import { SelectAddress } from "../SelectAddress/SelectAddress";
 
@@ -30,6 +30,7 @@ export default function CustomAvatar({ regions, loadingRegions }) {
   const [isFormReady, setIsFormReady] = useState(false);
   const [provinces, setProvinces] = useState([]);
   const [cities, setCities] = useState([]);
+  const [ratingInfo, setRatingInfo] = useState();
 
   // Inicializar datos del formulario cuando el usuario está disponible
   useEffect(() => {
@@ -79,6 +80,20 @@ export default function CustomAvatar({ regions, loadingRegions }) {
 
     getCurrentAddress();
   }, [user, defaultUser]);
+
+  useEffect(() => {
+    const getRating = async () => {
+      try {
+        const response = await ratingService.getRatings(user.user.id);
+        console.log(response);
+        setRatingInfo(response);
+      } catch (error) {
+        console.log("Error al obtener el rating del vendedor", error);
+      }
+    };
+
+    getRating();
+  }, []);
 
   const getProvinces = async (value) => {
     try {
@@ -209,10 +224,12 @@ export default function CustomAvatar({ regions, loadingRegions }) {
         <div>
           <div className="d-flex align-items-center gap-3">
             <h3>{user?.user?.name || ""}</h3>
-            <UserRating
-              averageRating={user?.rating?.average || 0}
-              totalRatings={user?.rating?.total || 0}
-            />
+            {ratingInfo && (
+              <UserRating
+                averageRating={ratingInfo.averageRating || 0}
+                totalRatings={ratingInfo.totalRatings || 0}
+              />
+            )}
           </div>
           <p>
             {user.address?.city}, {user.address?.region}

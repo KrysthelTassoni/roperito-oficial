@@ -10,7 +10,7 @@ import CustomButton from "../../components/CustomButton/CustomButton";
 import CustomModal from "../../components/CustomModal/CustomModal";
 import { toast } from "react-toastify";
 import CustomInput from "../../components/CustomInput/CustomInput";
-import { orderService } from "../../services";
+import { orderService, ratingService } from "../../services";
 import { useAuth } from "../../context/AuthContext";
 
 const ProductDetail = () => {
@@ -23,6 +23,7 @@ const ProductDetail = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [selectedMessage, setSelectedMessage] = useState("");
   const [ifSentMessage, setIfSentMessage] = useState(false);
+  const [ratingInfo, setRatingInfo] = useState();
 
   const predefinedMessages = [
     "¿Sigue disponible?",
@@ -37,6 +38,7 @@ const ProductDetail = () => {
       if (foundProduct) {
         setProduct(foundProduct);
         verifyMessageSent(foundProduct.id);
+        getRating(foundProduct.seller.id);
       }
       setLoading(false);
     } catch (error) {
@@ -44,6 +46,16 @@ const ProductDetail = () => {
       toast.error("Error al cargar el producto. Inténtalo de nuevo más tarde.");
     }
   }, [id, products]);
+
+  const getRating = async (user_id) => {
+    try {
+      const response = await ratingService.getRatings(user_id);
+      console.log(response);
+      setRatingInfo(response);
+    } catch (error) {
+      console.log("Error al obtener el rating del vendedor", error);
+    }
+  };
 
   const verifyMessageSent = async (product_id) => {
     try {
@@ -60,7 +72,6 @@ const ProductDetail = () => {
         product.id,
         selectedMessage
       );
-
       toast.success(response.message);
       setShowContactModal(false);
     } catch (error) {
@@ -174,9 +185,11 @@ const ProductDetail = () => {
             <p className="mb-2">{product.seller.name}</p>
             <div className="seller-rating">
               <FaStar className="star-icon" />
-              <span>
-                {product.seller?.rating} ({product.seller?.totalRatings})
-              </span>
+              {ratingInfo && (
+                <span>
+                  {ratingInfo.averageRating} ({ratingInfo.totalRatings})
+                </span>
+              )}
             </div>
           </div>
           {!user.products.some((p) => p.id === product.id) && (

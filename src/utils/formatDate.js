@@ -2,7 +2,7 @@ export function formatRelativeTime(dateString) {
   const rtf = new Intl.RelativeTimeFormat("es", { numeric: "auto" });
   const now = new Date();
   const then = new Date(dateString);
-  const diffInSeconds = Math.floor((then - now) / 1000);
+  const diffInSeconds = Math.floor((now - then) / 1000); // Cambié aquí el orden
 
   const divisions = [
     { amount: 60, unit: "second" },
@@ -16,7 +16,8 @@ export function formatRelativeTime(dateString) {
   let duration = diffInSeconds;
   for (let i = 0; i < divisions.length; i++) {
     if (Math.abs(duration) < divisions[i].amount) {
-      return rtf.format(Math.round(duration), divisions[i].unit);
+      return rtf.format(Math.round(-duration), divisions[i].unit);
+      // Nota: uso -duration para que sea "hace X", no "en X"
     }
     duration /= divisions[i].amount;
   }

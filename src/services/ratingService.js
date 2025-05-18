@@ -1,20 +1,27 @@
-import apiClient from './apiClient';
-import { API_CONFIG } from '../config/api.config';
+import apiClient from "./apiClient";
+import { API_CONFIG } from "../config/api.config";
 
 export const ratingService = {
-    create: async(ratingData) => {
-        // ratingData debe tener: product_id, value, comment
-        const response = await apiClient.post(API_CONFIG.ENDPOINTS.RATINGS.BASE, ratingData);
-        return response.data;
-    },
+  create: async (order_id, value) => {
+    // ratingData debe tener: product_id, value, comment
+    const response = await apiClient.post(API_CONFIG.ENDPOINTS.RATINGS.BASE, {
+      order_id,
+      value,
+    });
+    return response.data;
+  },
 
-    getProductRatings: async(productId) => {
-        const response = await apiClient.get(API_CONFIG.ENDPOINTS.RATINGS.PRODUCT(productId));
-        return response.data;
-    },
+  ifRatingSeller: async (sellerId) => {
+    const response = await apiClient.get(
+      API_CONFIG.ENDPOINTS.RATINGS.IFRATINGSELLER(sellerId)
+    );
+    return response.data;
+  },
 
-    getUserRatings: async() => {
-        const response = await apiClient.get(API_CONFIG.ENDPOINTS.RATINGS.USER);
-        return response.data;
-    }
+  getRatings: async (userId) => {
+    const response = await apiClient.get(
+      API_CONFIG.ENDPOINTS.RATINGS.SELLERRATING(userId)
+    );
+    return response.data;
+  },
 };

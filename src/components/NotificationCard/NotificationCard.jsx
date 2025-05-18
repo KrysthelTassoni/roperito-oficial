@@ -1,21 +1,14 @@
-import { Card, Button, Modal, Form } from "react-bootstrap";
-import { Link } from "react-router-dom";
-import { defaultImages } from "../../config/images";
-//import { format } from "date-fns";
-//import { es } from "date-fns/locale";
-import { FaUser, FaClock, FaReply, FaCheck, FaBell } from "react-icons/fa";
+import { Card, Button, Form } from "react-bootstrap";
+import { FaUser, FaClock, FaReply, FaBell } from "react-icons/fa";
 import { useState } from "react";
-//import { messageService } from "../../services"; // Asegúrate de tener esto creado
-import Loading from "../Loading/Loading";
 import "./NotificationCard.css";
-import { BiBell, BiNotification } from "react-icons/bi";
 import CustomModal from "../CustomModal/CustomModal";
 import { orderService } from "../../services";
 import { toast } from "react-toastify";
 import { formatRelativeTime } from "../../utils/formatDate";
 import CustomButton from "../CustomButton/CustomButton";
 
-const NotificationCard = ({ message, onMarkedAsRead = null }) => {
+const NotificationCard = ({ message, setNotifications }) => {
   const {
     id,
     message: content,
@@ -32,8 +25,6 @@ const NotificationCard = ({ message, onMarkedAsRead = null }) => {
   const [replyText, setReplyText] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // const formattedDate = format(new Date(created_at), "PPpp", { locale: es });
-
   const handleReply = async () => {
     if (!replyText.trim()) return;
 
@@ -41,9 +32,10 @@ const NotificationCard = ({ message, onMarkedAsRead = null }) => {
       setLoading(true);
       await orderService.replyMessage(id, replyText);
       toast.success("Respuesta enviada!");
-
       setReplyText("");
       setShowModal(false);
+      // Quitar esta notificación del estado global
+      setNotifications((prev) => prev.filter((n) => n.id !== id));
     } catch (error) {
       console.error("Error al enviar respuesta:", error);
     } finally {
@@ -76,7 +68,7 @@ const NotificationCard = ({ message, onMarkedAsRead = null }) => {
           <Card.Text className="mb-3 d-flex align-items-center gap-2">
             <FaClock className="text-secondary" />
             <span className="text-time">
-              {seller_name === null
+              {seller_response === null
                 ? formatRelativeTime(created_at)
                 : formatRelativeTime(responded_at)}
             </span>

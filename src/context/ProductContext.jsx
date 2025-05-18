@@ -3,6 +3,7 @@ import { AllProducts, userProfile } from "../config/data";
 import { useAuth } from "./AuthContext";
 import { favoriteService, metadataService, productService } from "../services";
 import { toast } from "react-toastify";
+import socket from "../utils/socket";
 
 const ProductContext = createContext();
 
@@ -48,6 +49,22 @@ function ProductProvider({ children }) {
 
     getAllProducts();
   }, [refresh]);
+
+  useEffect(() => {
+    console.log(products);
+  }, [products]);
+
+  // socket io
+  useEffect(() => {
+    socket.on("producto_creado", (data) => {
+      setProducts((prev) => [data, ...prev]);
+      toast.success("Nuevo producto disponible!");
+    });
+    // Cleanup
+    return () => {
+      socket.off("producto_creado");
+    };
+  }, []);
 
   useEffect(() => {
     const getMetadata = async () => {

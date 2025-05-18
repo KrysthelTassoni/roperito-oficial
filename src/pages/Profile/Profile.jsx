@@ -1,4 +1,4 @@
-import { Container, Row, Col, Card, Nav, Tab } from "react-bootstrap";
+import { Container, Row, Col, Card, Nav, Tab, Button } from "react-bootstrap";
 import { FaUser } from "react-icons/fa";
 import { useAuth } from "../../context/AuthContext";
 import ProductCard from "../../components/ProductCard/ProductCard";
@@ -17,11 +17,12 @@ import { PiPlus } from "react-icons/pi";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useEffect, useRef, useState } from "react";
-import { addressService, metadataService, orderService } from "../../services";
+import { addressService, orderService } from "../../services";
 import NotificationCard from "../../components/NotificationCard/NotificationCard";
 import { notifyUser } from "../../utils/notifyUser";
 import UserPurchases from "../../components/UserPurchase/UserPurchases";
 import UserSales from "../../components/UserSales/UserSales";
+import socket from "../../utils/socket";
 
 // Regiones por defecto para cuando falla la carga
 
@@ -32,6 +33,8 @@ const Profile = () => {
   const [regions, setRegions] = useState(); // Inicializar con regiones por defecto
   const [notifications, setNotifications] = useState([]);
   const [loadingRegions, setLoadingRegions] = useState(true);
+  const [newNotification, setNewNotification] = useState(false);
+  const [activeTab, setActiveTab] = useState("publications");
 
   useEffect(() => {
     const getRegions = async () => {
@@ -49,10 +52,37 @@ const Profile = () => {
     getMessages();
   }, []);
 
+  useEffect(() => {
+    socket.on("nuevo_mensaje_comprador", (data) => {
+      toast.success("Nuevo mensaje de un comprador!");
+      console.log("data recibida", data);
+      setNotifications((prev) => [data, ...prev]);
+      setNewNotification(true);
+    });
+
+    // Cleanup
+    return () => {
+      socket.off("nuevo_mensaje_comprador");
+    };
+  }, []);
+
+  useEffect(() => {
+    socket.on("respuesta_vendedor", (data) => {
+      toast.success("Nuevo mensaje de vendedor!");
+      console.log("data recibida al comprador", data);
+      setNotifications((prev) => [data, ...prev]);
+      setNewNotification(true);
+    });
+    return () => {
+      socket.off("respuesta_vendedor");
+    };
+  }, []);
+
   const getMessages = async () => {
     try {
       const response = await orderService.getMessage();
       setNotifications(response.data);
+      console.log(response.data);
     } catch (error) {
       console.error("Error al recibir mensajes", error);
     }
@@ -108,30 +138,51 @@ const Profile = () => {
         <Tab.Container defaultActiveKey="publications">
           <Card>
             <Card.Header>
-              <Nav variant="tabs" className="justify-content-center">
+              <Nav
+                variant="tabs"
+                activeKey={activeTab}
+                onSelect={(selectedKey) => {
+                  setActiveTab(selectedKey);
+                  if (selectedKey === "notifications") {
+                    setNewNotification(false);
+                  }
+                }}
+                className="flex flex-wrap justify-center gap-2"
+              >
                 <Nav.Item>
                   <Nav.Link eventKey="publications">
-                    <CiFolderOn /> Mis publicaciones
+                    <CiFolderOn /> Mis Publicaciones
                   </Nav.Link>
                 </Nav.Item>
                 <Nav.Item>
                   <Nav.Link eventKey="favorites">
-                    <BiHeart /> Mis favoritos
+                    <BiHeart /> Favoritos
                   </Nav.Link>
                 </Nav.Item>
                 <Nav.Item>
-                  <Nav.Link eventKey="notifications">
-                    <BiNotification /> Notificaciones
+                  <Nav.Link
+                    eventKey="notifications"
+                    className="position-relative"
+                  >
+                    <div
+                      style={{ position: "relative", display: "inline-block" }}
+                    >
+                      <BiNotification size={20} />
+                      {newNotification && (
+                        <span className="notification-dot"></span>
+                      )}
+                    </div>{" "}
+                    Notificaciones
                   </Nav.Link>
                 </Nav.Item>
                 <Nav.Item>
                   <Nav.Link eventKey="sales">
-                    <BiDollar /> Mis Ventas
+                    <BiDollar /> Ventas
                   </Nav.Link>
                 </Nav.Item>
                 <Nav.Item>
                   <Nav.Link eventKey="shopping">
-                    <BiShoppingBag /> Mis Compras
+                    <BiShoppingBag /> Compras
                   </Nav.Link>
                 </Nav.Item>
               </Nav>
@@ -202,7 +253,10 @@ const Profile = () => {
                     {notifications.length > 0 ? (
                       notifications.map((data) => (
                         <Col key={data.id} className="w-100">
-                          <NotificationCard message={data} />
+                          <NotificationCard
+                            message={data}
+                            setNotifications={setNotifications}
+                          />
                         </Col>
                       ))
                     ) : (

@@ -1,6 +1,6 @@
-import { Card, Button, Dropdown, ButtonGroup } from "react-bootstrap";
+import { Card, Button } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
-import { FaEdit, FaTrash, FaHeart, FaRegHeart } from "react-icons/fa";
+import { FaEdit, FaTrash } from "react-icons/fa";
 import { defaultImages } from "../../config/images";
 import Desplegable from "../Desplegable/Desplegable";
 import FavoriteButton from "../CustomButton/FavoriteButton/FavoriteButton";

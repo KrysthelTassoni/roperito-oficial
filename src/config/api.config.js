@@ -22,8 +22,8 @@ export const API_CONFIG = {
     },
     RATINGS: {
       BASE: "/api/ratings",
-      PRODUCT: (id) => `/api/products/${id}/ratings`,
-      USER: "/api/users/ratings",
+      SELLERRATING: (userId) => `/api/ratings/user/${userId}`,
+      IFRATINGSELLER: (sellerId) => `/api/ratings/ifrating/${sellerId}`,
     },
     FAVORITES: {
       BASE: "/api/favorites",
