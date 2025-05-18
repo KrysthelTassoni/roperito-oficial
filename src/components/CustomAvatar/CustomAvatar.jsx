@@ -85,10 +85,10 @@ export default function CustomAvatar({ regions, loadingRegions }) {
     const getRating = async () => {
       try {
         const response = await ratingService.getRatings(user.user.id);
-        console.log(response);
+
         setRatingInfo(response);
       } catch (error) {
-        console.log("Error al obtener el rating del vendedor", error);
+        console.error("Error al obtener el rating del vendedor", error);
       }
     };
 

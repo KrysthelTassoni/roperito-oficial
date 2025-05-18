@@ -23,18 +23,24 @@ import { notifyUser } from "../../utils/notifyUser";
 import UserPurchases from "../../components/UserPurchase/UserPurchases";
 import UserSales from "../../components/UserSales/UserSales";
 import socket from "../../utils/socket";
+import { useProducts } from "../../context/ProductContext";
 
 // Regiones por defecto para cuando falla la carga
 
 const Profile = () => {
   const { user, isAuthenticated, logout } = useAuth();
+  const {
+    notifications,
+    setNotifications,
+    newNotification,
+    setNewNotification,
+  } = useProducts();
   const navigate = useNavigate();
   const hasShownError = useRef(false);
   const [regions, setRegions] = useState(); // Inicializar con regiones por defecto
-  const [notifications, setNotifications] = useState([]);
   const [loadingRegions, setLoadingRegions] = useState(true);
-  const [newNotification, setNewNotification] = useState(false);
   const [activeTab, setActiveTab] = useState("publications");
+  const [orders_bought, setOrders_bought] = useState(user.orders_bought);
 
   useEffect(() => {
     const getRegions = async () => {
@@ -53,28 +59,22 @@ const Profile = () => {
   }, []);
 
   useEffect(() => {
-    socket.on("nuevo_mensaje_comprador", (data) => {
-      toast.success("Nuevo mensaje de un comprador!");
-      console.log("data recibida", data);
-      setNotifications((prev) => [data, ...prev]);
-      setNewNotification(true);
+    //obtener ordenes del comprador
+    socket.on("orden_compraventa", (data) => {
+      setOrders_bought((prev) => [data, ...prev]);
+    });
+
+    //eliminar la orden
+    socket.on("orden_cancelada", (data) => {
+      setOrders_bought((prev) =>
+        prev.filter((order) => order.id !== data.order_id)
+      );
     });
 
     // Cleanup
     return () => {
-      socket.off("nuevo_mensaje_comprador");
-    };
-  }, []);
-
-  useEffect(() => {
-    socket.on("respuesta_vendedor", (data) => {
-      toast.success("Nuevo mensaje de vendedor!");
-      console.log("data recibida al comprador", data);
-      setNotifications((prev) => [data, ...prev]);
-      setNewNotification(true);
-    });
-    return () => {
-      socket.off("respuesta_vendedor");
+      socket.off("orden_compraventa");
+      socket.off("orden_cancelada");
     };
   }, []);
 
@@ -82,7 +82,6 @@ const Profile = () => {
     try {
       const response = await orderService.getMessage();
       setNotifications(response.data);
-      console.log(response.data);
     } catch (error) {
       console.error("Error al recibir mensajes", error);
     }
@@ -291,8 +290,8 @@ const Profile = () => {
 
                 <Tab.Pane eventKey="shopping">
                   <Row className="g-3 flex-column">
-                    {user.orders_bought.length > 0 ? (
-                      user.orders_bought.map((data) => (
+                    {orders_bought.length > 0 ? (
+                      orders_bought.map((data) => (
                         <Col key={data.id} className="w-100">
                           <UserPurchases order={data} />
                         </Col>

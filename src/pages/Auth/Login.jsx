@@ -29,7 +29,7 @@ const Login = () => {
         navigate("/profile");
       }
     } catch (error) {
-      console.log("error al iniciar sesión: ", error);
+      console.error("error al iniciar sesión: ", error);
       toast.error("Ocurrió un error al iniciar sesión. Intenta nuevamente.");
     }
   };

@@ -9,9 +9,12 @@ export default function FavoriteButton({
   product,
   isGallery = false,
   isFavorite = false,
+  isProductDetail = false,
 }) {
   const { isAuthenticated } = useAuth();
   const { favorites, addToFavorites, removeFromFavorites } = useProducts();
+
+  console.log(product, favorites);
 
   const isFav = isFavorite
     ? favorites.some((fav) => fav.id === product.id)
@@ -20,7 +23,10 @@ export default function FavoriteButton({
   const handleFavoriteClick = () => {
     if (!isAuthenticated) return;
     if (isFav) {
-      removeFromFavorites(isGallery ? product.id : product.product_id); //se pasa el id del producto NO el id de la tabla favoritos
+      console.log(product.product_id);
+      removeFromFavorites(
+        isGallery || isProductDetail ? product.id : product.product_id
+      ); //se pasa el id del producto NO el id de la tabla favoritos
     } else {
       addToFavorites(product);
     }

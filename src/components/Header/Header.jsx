@@ -1,13 +1,22 @@
-import { Navbar, Nav, Button, Container, Form } from "react-bootstrap";
-import { Link, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import { Navbar, Nav, Container } from "react-bootstrap";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { FaUser } from "react-icons/fa";
 import CustomButton from "../CustomButton/CustomButton";
-import { BiLogOut } from "react-icons/bi";
+import { useProducts } from "../../context/ProductContext";
 
 const Header = () => {
   const { isAuthenticated, logout } = useAuth();
+  const { newNotification, setNewNotification } = useProducts();
   const navigate = useNavigate();
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.pathname === "/profile") {
+      setNewNotification(false);
+    }
+  }, [location.pathname, setNewNotification]);
 
   const handleLogout = () => {
     logout();
@@ -44,12 +53,20 @@ const Header = () => {
                 <Nav.Link as={Link} to="/create-product" className="me-2">
                   Publicar
                 </Nav.Link>
+
                 <Nav.Link
                   as={Link}
                   to="/profile"
-                  className="d-flex align-items-center"
+                  className="d-flex align-items-center position-relative"
                 >
-                  <FaUser className="me-2" />
+                  <div
+                    style={{ position: "relative", display: "inline-block" }}
+                  >
+                    <FaUser className="me-2" />
+                    {newNotification && location.pathname !== "/profile" && (
+                      <span className="notification-dot"></span>
+                    )}
+                  </div>
                   Mi Perfil
                 </Nav.Link>
 

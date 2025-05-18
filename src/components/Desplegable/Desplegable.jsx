@@ -3,12 +3,14 @@ import { ButtonGroup, Dropdown, Modal, Form, Button } from "react-bootstrap";
 import CustomButton from "../CustomButton/CustomButton";
 import { toast } from "react-toastify";
 import { orderService, productService } from "../../services";
+import { useAuth } from "../../context/AuthContext";
 
 export default function Desplegable({ product }) {
   const [status, setStatus] = useState(product.status || "Estado");
   const [showModal, setShowModal] = useState(false);
   const [potentialBuyers, setPotentialBuyers] = useState([]);
   const [selectedBuyer, setSelectedBuyer] = useState("");
+  const { refreshAuth, setRefreshAuth } = useAuth();
 
   const handleStatusChange = async (newStatus) => {
     if (newStatus === "vendido") {
@@ -27,6 +29,7 @@ export default function Desplegable({ product }) {
         await productService.status(product.id, newStatus);
         setStatus(newStatus);
         toast.success("Producto marcado como disponible.");
+        setRefreshAuth(!refreshAuth);
       } catch (error) {
         toast.error("Error al cambiar el estado.");
         console.error(error);
@@ -43,6 +46,7 @@ export default function Desplegable({ product }) {
       await productService.status(product.id, "vendido");
       setStatus("vendido");
       setShowModal(false);
+      setRefreshAuth(!refreshAuth);
       toast.success("Producto vendido!");
     } catch (error) {
       toast.error("Error al registrar la venta.");

@@ -76,7 +76,7 @@ const ProductCard = ({
         <Card.Img
           variant="top"
           src={
-            product
+            product.images
               ? product.images?.find((img) => img.order === 1).image_url
               : defaultImages.fallback
           }
@@ -88,20 +88,25 @@ const ProductCard = ({
         <div className="position-absolute top-0 end-0 m-2 d-flex flex-column gap-1">
           {myProducts ? (
             <>
-              <CustomButton
-                title={"Editar"}
-                icon={<FaEdit />}
-                onClick={handleEdit}
-              />
+              {product.status === "disponible" && (
+                <CustomButton
+                  title={"Editar"}
+                  icon={<FaEdit />}
+                  onClick={handleEdit}
+                />
+              )}
+
               <Desplegable product={product} />
 
-              <CustomButton
-                title={"Eliminar"}
-                icon={<FaTrash />}
-                variant="danger"
-                iconColor={"white"}
-                onClick={handleDeleteClick}
-              />
+              {product.status === "disponible" && (
+                <CustomButton
+                  title={"Eliminar"}
+                  icon={<FaTrash />}
+                  variant="danger"
+                  iconColor={"white"}
+                  onClick={handleDeleteClick}
+                />
+              )}
             </>
           ) : (
             isAuthenticated && (

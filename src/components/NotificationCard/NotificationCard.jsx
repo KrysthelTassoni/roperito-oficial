@@ -1,12 +1,13 @@
 import { Card, Button, Form } from "react-bootstrap";
 import { FaUser, FaClock, FaReply, FaBell } from "react-icons/fa";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./NotificationCard.css";
 import CustomModal from "../CustomModal/CustomModal";
 import { orderService } from "../../services";
 import { toast } from "react-toastify";
 import { formatRelativeTime } from "../../utils/formatDate";
 import CustomButton from "../CustomButton/CustomButton";
+import { closedQuestions } from "../../constants/answers";
 
 const NotificationCard = ({ message, setNotifications }) => {
   const {
@@ -23,13 +24,23 @@ const NotificationCard = ({ message, setNotifications }) => {
 
   const [showModal, setShowModal] = useState(false);
   const [replyText, setReplyText] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [answers, setAnswers] = useState([]);
+
+  useEffect(() => {
+    if (content) {
+      const foundQuestion = closedQuestions.find((q) => q.question === content);
+      if (foundQuestion) {
+        setAnswers(foundQuestion.answers);
+      } else {
+        setAnswers([]); // Si no encuentra la pregunta, vacía las respuestas
+      }
+    }
+  }, [content]);
 
   const handleReply = async () => {
     if (!replyText.trim()) return;
 
     try {
-      setLoading(true);
       await orderService.replyMessage(id, replyText);
       toast.success("Respuesta enviada!");
       setReplyText("");
@@ -38,8 +49,6 @@ const NotificationCard = ({ message, setNotifications }) => {
       setNotifications((prev) => prev.filter((n) => n.id !== id));
     } catch (error) {
       console.error("Error al enviar respuesta:", error);
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -111,11 +120,7 @@ const NotificationCard = ({ message, setNotifications }) => {
       >
         <Form.Label>Selecciona una respuesta</Form.Label>
         <div className="d-flex flex-column gap-2">
-          {[
-            "Gracias por tu interés, ya te contacto.",
-            "El producto sigue disponible.",
-            "Lo siento, el producto ya fue vendido.",
-          ].map((msg, index) => (
+          {answers.map((msg, index) => (
             <Button
               key={index}
               variant={replyText === msg ? "primary" : "outline-primary"}

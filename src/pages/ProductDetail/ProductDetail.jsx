@@ -9,9 +9,9 @@ import "./ProductDetail.css";
 import CustomButton from "../../components/CustomButton/CustomButton";
 import CustomModal from "../../components/CustomModal/CustomModal";
 import { toast } from "react-toastify";
-import CustomInput from "../../components/CustomInput/CustomInput";
 import { orderService, ratingService } from "../../services";
 import { useAuth } from "../../context/AuthContext";
+import { closedQuestions } from "../../constants/answers";
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -24,13 +24,6 @@ const ProductDetail = () => {
   const [selectedMessage, setSelectedMessage] = useState("");
   const [ifSentMessage, setIfSentMessage] = useState(false);
   const [ratingInfo, setRatingInfo] = useState();
-
-  const predefinedMessages = [
-    "¿Sigue disponible?",
-    "¿Realizas envíos?",
-    "¿Puedes hacer un descuento?",
-    "¿Dónde se puede retirar?",
-  ];
 
   useEffect(() => {
     try {
@@ -50,10 +43,10 @@ const ProductDetail = () => {
   const getRating = async (user_id) => {
     try {
       const response = await ratingService.getRatings(user_id);
-      console.log(response);
+
       setRatingInfo(response);
     } catch (error) {
-      console.log("Error al obtener el rating del vendedor", error);
+      console.error("Error al obtener el rating del vendedor", error);
     }
   };
 
@@ -75,7 +68,7 @@ const ProductDetail = () => {
       toast.success(response.message);
       setShowContactModal(false);
     } catch (error) {
-      console.log("error al enviar el mensaje", error);
+      console.error("error al enviar el mensaje", error);
       toast.error("Error al enviar el mensaje");
     }
   };
@@ -104,31 +97,35 @@ const ProductDetail = () => {
                 activeIndex={activeIndex}
                 onSelect={(selectedIndex) => setActiveIndex(selectedIndex)}
               >
-                {product.images.map((img, index) => (
-                  <Carousel.Item key={index}>
-                    <div className="carousel-container">
-                      <img
-                        className="carousel-image"
-                        src={img.image_url}
-                        alt={`Imagen ${index + 1}`}
-                      />
-                    </div>
-                  </Carousel.Item>
-                ))}
+                {[...product.images]
+                  .sort((a, b) => a.order - b.order)
+                  .map((img, index) => (
+                    <Carousel.Item key={img.id}>
+                      <div className="carousel-container">
+                        <img
+                          className="carousel-image"
+                          src={img.image_url}
+                          alt={`Imagen ${index + 1}`}
+                        />
+                      </div>
+                    </Carousel.Item>
+                  ))}
               </Carousel>
 
               <div className="thumbnail-container">
-                {product.images.map((img, index) => (
-                  <img
-                    key={index}
-                    src={img.image_url}
-                    alt={`Miniatura ${index + 1}`}
-                    onClick={() => setActiveIndex(index)}
-                    className={`thumbnail-image ${
-                      activeIndex === index ? "active" : ""
-                    }`}
-                  />
-                ))}
+                {[...product.images]
+                  .sort((a, b) => a.order - b.order)
+                  .map((img, index) => (
+                    <img
+                      key={img.id} // mejor usar id único en key
+                      src={img.image_url}
+                      alt={`Miniatura ${index + 1}`}
+                      onClick={() => setActiveIndex(index)}
+                      className={`thumbnail-image ${
+                        activeIndex === index ? "active" : ""
+                      }`}
+                    />
+                  ))}
               </div>
             </>
           ) : (
@@ -161,7 +158,7 @@ const ProductDetail = () => {
                 </span>
               </div>
             </div>
-            <FavoriteButton product={product} />
+            <FavoriteButton product={product} isProductDetail />
           </div>
 
           <h2 className="product-price">${product.price}</h2>
@@ -209,8 +206,8 @@ const ProductDetail = () => {
         textHeader={"Información de Contacto"}
         textButtonCancel="Cerrar"
         variant="danger"
-        textButtonConfirm={"Enviar"}
-        confirm={handleSubmitMessage}
+        textButtonConfirm={!ifSentMessage && "Enviar"}
+        confirm={!ifSentMessage && handleSubmitMessage}
       >
         <p>
           <strong>Teléfono:</strong> {product.seller?.phone_number}
@@ -226,15 +223,17 @@ const ProductDetail = () => {
             </p>
 
             <div className="mb-3">
-              {predefinedMessages.map((msg, index) => (
+              {closedQuestions.map((res, index) => (
                 <CustomButton
                   key={index}
-                  title={msg}
+                  title={res.question}
                   variant={
-                    selectedMessage === msg ? "primary" : "outline-secondary"
+                    selectedMessage === res.question
+                      ? "primary"
+                      : "outline-secondary"
                   }
                   style="me-2 mb-2"
-                  onClick={() => setSelectedMessage(msg)}
+                  onClick={() => setSelectedMessage(res.question)}
                 />
               ))}
             </div>

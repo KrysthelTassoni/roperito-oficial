@@ -1,30 +1,11 @@
-import React, { useEffect, useState } from "react";
-import { Card, Button, Modal, Form } from "react-bootstrap";
+import React, { useState } from "react";
+import { Card } from "react-bootstrap";
 import "./UserPurchases.css";
 import RatingModal from "../RatingModal/RatingModal";
 import { CiStar } from "react-icons/ci";
-import { ratingService } from "../../services";
 
 export default function PurchaseCard({ order }) {
   const [showRating, setShowRating] = useState(false);
-
-  console.log("order jaja", order);
-
-  useEffect(() => {
-    const verifyRating = async () => {
-      try {
-        // const response = await ratingService.ifRatingSeller();
-        // console.log("Verificacion exitosa", response);
-      } catch (error) {
-        console.error(
-          "Error al verificar si comprador valoro al vendedor",
-          error
-        );
-      }
-    };
-
-    verifyRating();
-  }, []);
 
   return (
     <>

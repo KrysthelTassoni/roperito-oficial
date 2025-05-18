@@ -35,6 +35,8 @@ function ProductProvider({ children }) {
     search: "",
     is_active: true,
   });
+  const [notifications, setNotifications] = useState([]);
+  const [newNotification, setNewNotification] = useState(false);
 
   useEffect(() => {
     const getAllProducts = async () => {
@@ -50,19 +52,31 @@ function ProductProvider({ children }) {
     getAllProducts();
   }, [refresh]);
 
-  useEffect(() => {
-    console.log(products);
-  }, [products]);
-
   // socket io
   useEffect(() => {
     socket.on("producto_creado", (data) => {
       setProducts((prev) => [data, ...prev]);
       toast.success("Nuevo producto disponible!");
     });
+
+    //obtener mensaje del comprador
+    socket.on("nuevo_mensaje_comprador", (data) => {
+      toast.success("Nuevo mensaje de un comprador!");
+      setNotifications((prev) => [data, ...prev]);
+      setNewNotification(true);
+    });
+
+    //obtener respuesta del vendedor
+    socket.on("respuesta_vendedor", (data) => {
+      toast.success("Nuevo mensaje de vendedor!");
+      setNotifications((prev) => [data, ...prev]);
+      setNewNotification(true);
+    });
     // Cleanup
     return () => {
       socket.off("producto_creado");
+      socket.off("nuevo_mensaje_comprador");
+      socket.off("respuesta_vendedor");
     };
   }, []);
 
@@ -146,12 +160,12 @@ function ProductProvider({ children }) {
 
   const removeFromFavorites = async (productId) => {
     try {
-      const response = await favoriteService.remove(productId);
+      await favoriteService.remove(productId);
       setFavorites((prev) => prev.filter((p) => p.id !== productId));
       setRefreshAuth(!refreshAuth);
       toast.success("Producto eliminado de favorito!");
     } catch (error) {
-      console.log("error al remover de favoritos", error);
+      console.error("error al remover de favoritos", error);
       toast.error(error.response.data.error);
     }
   };
@@ -178,6 +192,10 @@ function ProductProvider({ children }) {
         setRefresh,
         categories,
         sizes,
+        notifications,
+        setNotifications,
+        newNotification,
+        setNewNotification,
       }}
     >
       {children}

@@ -1,6 +1,12 @@
-import { Container, Row, Col, Card } from 'react-bootstrap';
-import { FaUserPlus, FaTshirt, FaComments, FaShieldAlt, FaSearch } from 'react-icons/fa';
-import './HowItWorks.css';
+import { Container, Row, Col, Card } from "react-bootstrap";
+import {
+  FaUserPlus,
+  FaTshirt,
+  FaComments,
+  FaShieldAlt,
+  FaSearch,
+} from "react-icons/fa";
+import "./HowItWorks.css";
 
 const HowItWorks = () => {
   return (
@@ -8,7 +14,7 @@ const HowItWorks = () => {
       <Container>
         <h1 className="text-center section-title">¿Cómo funciona Roperito?</h1>
         <p className="text-center lead">
-          Te guiamos paso a paso para que puedas <strong>vender </strong> 
+          Te guiamos paso a paso para que puedas <strong>vender </strong>
           prendas usadas de una forma simple y rápida.
         </p>
 
@@ -21,8 +27,8 @@ const HowItWorks = () => {
                 </div>
                 <h3>1. Crea una cuenta</h3>
                 <p>
-                  Regístrate rápidamente con tu correo para
-                  comenzar a vender en Roperito, si ya estás registrado inicia sesión.
+                  Regístrate rápidamente con tu correo para comenzar a vender en
+                  Roperito, si ya estás registrado inicia sesión.
                 </p>
               </Card.Body>
             </Card>
@@ -51,7 +57,9 @@ const HowItWorks = () => {
                 </div>
                 <h3>3. Interactúa con compradores</h3>
                 <p>
-                  Resuelve dudas de los interesados y coordina la venta sin intermediarios. Al concretar la venta, cambia el estado de tu publicación.
+                  Resuelve dudas de los interesados y coordina la venta sin
+                  intermediarios. Al concretar la venta, cambia el estado de tu
+                  publicación.
                 </p>
               </Card.Body>
             </Card>
@@ -59,7 +67,8 @@ const HowItWorks = () => {
         </Row>
 
         <p className="text-center lead">
-          Tambien puedes <strong>comprar</strong> moda circular a un precio muy conveniente.
+          Tambien puedes <strong>comprar</strong> moda circular a un precio muy
+          conveniente.
         </p>
 
         <Row className="mb-5">
@@ -71,8 +80,8 @@ const HowItWorks = () => {
                 </div>
                 <h3>1. Accede a Roperito </h3>
                 <p>
-                  Regístrate rápidamente con tu correo para
-                  comenzar, o inicia sesión si ya estás registrado.
+                  Regístrate rápidamente con tu correo para comenzar, o inicia
+                  sesión si ya estás registrado.
                 </p>
               </Card.Body>
             </Card>
@@ -86,7 +95,8 @@ const HowItWorks = () => {
                 </div>
                 <h3>2. Descubre nuestro catálogo</h3>
                 <p>
-                  Revisa todas nuestras publicaciones activas y selecciona tu artículo preferido.
+                  Revisa todas nuestras publicaciones activas y selecciona tu
+                  artículo preferido.
                 </p>
               </Card.Body>
             </Card>
@@ -100,7 +110,9 @@ const HowItWorks = () => {
                 </div>
                 <h3>3. ¡Contacta al vendedor!</h3>
                 <p>
-                  Resuelve tus dudas y cierra el trato directamente.
+                  Resuelve tus dudas, cierra el trato directamente y valora al
+                  vendedor después de la compra para ayudar a otros usuarios a
+                  confiar
                 </p>
               </Card.Body>
             </Card>
@@ -125,7 +137,10 @@ const HowItWorks = () => {
                 <ul className="list-unstyled security-list">
                   <li>Nunca compartas información personal sensible.</li>
                   <li>¡Prioriza Encuentros en Lugares Públicos!</li>
-                  <li>Revisa siempre la calificación del comprador/vendedor antes de concretar.</li>
+                  <li>
+                    Revisa siempre la calificación del comprador/vendedor antes
+                    de concretar.
+                  </li>
                 </ul>
               </Col>
             </Row>
@@ -136,4 +151,4 @@ const HowItWorks = () => {
   );
 };
 
-export default HowItWorks; 
+export default HowItWorks;

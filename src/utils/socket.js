@@ -15,9 +15,4 @@ socket.on("connect", () => {
   console.log("Conectado al socket. ID:", socket.id);
 });
 
-// Paso 4: Escuchar un evento
-socket.on("mensaje", (data) => {
-  console.log("Mensaje recibido:", data);
-});
-
 export default socket;
