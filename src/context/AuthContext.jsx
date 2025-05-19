@@ -1,5 +1,7 @@
 import { createContext, useState, useContext, useEffect } from "react";
-import { productService, userService } from "../services";
+import { productService, ratingService, userService } from "../services";
+import { notifyUser } from "../utils/notifyUser";
+import { toast } from "react-toastify";
 
 const AuthContext = createContext();
 
@@ -7,6 +9,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [refreshAuth, setRefreshAuth] = useState(false);
+  const [redirectLink, setRedirectLink] = useState(false);
 
   const fetchUserProfile = async () => {
     try {
@@ -14,21 +17,41 @@ export const AuthProvider = ({ children }) => {
       if (token) {
         const userData = await userService.getProfile(token);
 
-        // Comprobar la estructura de los datos
-        if (userData.user) {
-          if (userData.user.address) {
-            console.log("[AuthContext] Objeto address:", userData.user.address);
-          } else {
-            console.log("[AuthContext] El usuario no tiene objeto address");
-          }
-        }
-
         setUser(userData);
         setIsAuthenticated(true);
+
+        verifyRating();
       }
     } catch (error) {
       console.error("Error al obtener perfil de usuario:", error);
       logout(); // Si el token ya no es válido
+    }
+  };
+
+  const verifyRating = async () => {
+    try {
+      const res = await ratingService.ifRatingSeller();
+      if (res) {
+        toast.info(
+          <div
+            onClick={() => setRedirectLink(true)}
+            style={{ cursor: "pointer" }}
+          >
+            👉 Tienes una valoración pendiente. Haz clic aquí para calificar.
+          </div>,
+          {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+          }
+        );
+        // Solo mostrar 1 toast como pediste
+      }
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -59,6 +82,8 @@ export const AuthProvider = ({ children }) => {
         setRefreshAuth,
         refreshAuth,
         fetchUserProfile,
+        redirectLink,
+        setRedirectLink,
       }}
     >
       {children}

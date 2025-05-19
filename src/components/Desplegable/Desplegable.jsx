@@ -43,7 +43,7 @@ export default function Desplegable({ product }) {
         return toast.warn("Debe seleccionar un comprador.");
       }
       await orderService.createOrder(product.id, selectedBuyer);
-      await productService.status(product.id, "vendido");
+      const response = await productService.status(product.id, "vendido");
       setStatus("vendido");
       setShowModal(false);
       setRefreshAuth(!refreshAuth);

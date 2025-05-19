@@ -11,9 +11,9 @@ export const ratingService = {
     return response.data;
   },
 
-  ifRatingSeller: async (sellerId) => {
+  ifRatingSeller: async () => {
     const response = await apiClient.get(
-      API_CONFIG.ENDPOINTS.RATINGS.IFRATINGSELLER(sellerId)
+      API_CONFIG.ENDPOINTS.RATINGS.IFRATINGSELLER
     );
     return response.data;
   },

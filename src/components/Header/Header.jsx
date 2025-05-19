@@ -8,15 +8,15 @@ import { useProducts } from "../../context/ProductContext";
 
 const Header = () => {
   const { isAuthenticated, logout } = useAuth();
-  const { newNotification, setNewNotification } = useProducts();
+  const { inProfile, setInProfile } = useProducts();
   const navigate = useNavigate();
   const location = useLocation();
 
   useEffect(() => {
     if (location.pathname === "/profile") {
-      setNewNotification(false);
+      setInProfile(false);
     }
-  }, [location.pathname, setNewNotification]);
+  }, [location.pathname, setInProfile]);
 
   const handleLogout = () => {
     logout();
@@ -63,7 +63,7 @@ const Header = () => {
                     style={{ position: "relative", display: "inline-block" }}
                   >
                     <FaUser className="me-2" />
-                    {newNotification && location.pathname !== "/profile" && (
+                    {inProfile && location.pathname !== "/profile" && (
                       <span className="notification-dot"></span>
                     )}
                   </div>

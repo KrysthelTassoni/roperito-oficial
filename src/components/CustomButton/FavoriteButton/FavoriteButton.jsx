@@ -14,8 +14,6 @@ export default function FavoriteButton({
   const { isAuthenticated } = useAuth();
   const { favorites, addToFavorites, removeFromFavorites } = useProducts();
 
-  console.log(product, favorites);
-
   const isFav = isFavorite
     ? favorites.some((fav) => fav.id === product.id)
     : favorites.some((fav) => fav.product_id === product.id);
@@ -23,7 +21,6 @@ export default function FavoriteButton({
   const handleFavoriteClick = () => {
     if (!isAuthenticated) return;
     if (isFav) {
-      console.log(product.product_id);
       removeFromFavorites(
         isGallery || isProductDetail ? product.id : product.product_id
       ); //se pasa el id del producto NO el id de la tabla favoritos

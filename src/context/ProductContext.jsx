@@ -37,12 +37,12 @@ function ProductProvider({ children }) {
   });
   const [notifications, setNotifications] = useState([]);
   const [newNotification, setNewNotification] = useState(false);
+  const [inProfile, setInProfile] = useState(false);
 
   useEffect(() => {
     const getAllProducts = async () => {
       try {
         const response = await productService.getAll();
-
         setProducts(response);
       } catch (error) {
         console.error(error);
@@ -64,6 +64,7 @@ function ProductProvider({ children }) {
       toast.success("Nuevo mensaje de un comprador!");
       setNotifications((prev) => [data, ...prev]);
       setNewNotification(true);
+      setInProfile(true);
     });
 
     //obtener respuesta del vendedor
@@ -71,12 +72,22 @@ function ProductProvider({ children }) {
       toast.success("Nuevo mensaje de vendedor!");
       setNotifications((prev) => [data, ...prev]);
       setNewNotification(true);
+      setInProfile(true);
+    });
+
+    socket.on("cambio_status", (data) => {
+      if (data.status === "vendido") {
+        setProducts((prev) => prev.filter((n) => n.id !== data.id));
+      } else {
+        setProducts((prev) => [data, ...prev]);
+      }
     });
     // Cleanup
     return () => {
       socket.off("producto_creado");
       socket.off("nuevo_mensaje_comprador");
       socket.off("respuesta_vendedor");
+      socket.off("cambio_status");
     };
   }, []);
 
@@ -196,6 +207,8 @@ function ProductProvider({ children }) {
         setNotifications,
         newNotification,
         setNewNotification,
+        inProfile,
+        setInProfile,
       }}
     >
       {children}

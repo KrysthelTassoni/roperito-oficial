@@ -17,7 +17,7 @@ import { PiPlus } from "react-icons/pi";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useEffect, useRef, useState } from "react";
-import { addressService, orderService } from "../../services";
+import { addressService, orderService, ratingService } from "../../services";
 import NotificationCard from "../../components/NotificationCard/NotificationCard";
 import { notifyUser } from "../../utils/notifyUser";
 import UserPurchases from "../../components/UserPurchase/UserPurchases";
@@ -28,7 +28,8 @@ import { useProducts } from "../../context/ProductContext";
 // Regiones por defecto para cuando falla la carga
 
 const Profile = () => {
-  const { user, isAuthenticated, logout } = useAuth();
+  const { user, isAuthenticated, logout, redirectLink, setRedirectLink } =
+    useAuth();
   const {
     notifications,
     setNotifications,
@@ -40,7 +41,9 @@ const Profile = () => {
   const [regions, setRegions] = useState(); // Inicializar con regiones por defecto
   const [loadingRegions, setLoadingRegions] = useState(true);
   const [activeTab, setActiveTab] = useState("publications");
-  const [orders_bought, setOrders_bought] = useState(user.orders_bought);
+  const [orders_bought, setOrders_bought] = useState(
+    user.orders_bought || null
+  );
 
   useEffect(() => {
     const getRegions = async () => {
@@ -57,6 +60,14 @@ const Profile = () => {
     getRegions();
     getMessages();
   }, []);
+
+  useEffect(() => {
+    if (redirectLink) {
+      setActiveTab("shopping");
+      setNewNotification(false);
+      setRedirectLink(false);
+    }
+  }, [redirectLink]);
 
   useEffect(() => {
     //obtener ordenes del comprador
@@ -134,7 +145,10 @@ const Profile = () => {
       </Col>
 
       <Col lg={7}>
-        <Tab.Container defaultActiveKey="publications">
+        <Tab.Container
+          activeKey={activeTab}
+          onSelect={(key) => setActiveTab(key)}
+        >
           <Card>
             <Card.Header>
               <Nav
