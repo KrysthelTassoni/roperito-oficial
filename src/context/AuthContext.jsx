@@ -19,8 +19,6 @@ export const AuthProvider = ({ children }) => {
 
         setUser(userData);
         setIsAuthenticated(true);
-
-        verifyRating();
       }
     } catch (error) {
       console.error("Error al obtener perfil de usuario:", error);
@@ -28,10 +26,14 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
+  useEffect(() => {
+    verifyRating();
+  }, []);
+
   const verifyRating = async () => {
     try {
       const res = await ratingService.ifRatingSeller();
-      if (res) {
+      if (res.OrderId !== null) {
         toast.info(
           <div
             onClick={() => setRedirectLink(true)}
