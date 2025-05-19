@@ -76,8 +76,8 @@ const ProductCard = ({
         <Card.Img
           variant="top"
           src={
-            product.images
-              ? product.images?.find((img) => img.order === 1).image_url
+            product.images && product.images.length > 0
+              ? product.images.find((img) => img.order === 1)?.image_url || defaultImages.fallback
               : defaultImages.fallback
           }
           alt={product.title}

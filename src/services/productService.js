@@ -11,22 +11,40 @@ export const productService = {
     formData.append("size_id", productData.size_id);
     formData.append("category_id", productData.category_id);
 
-    // Agrega todas las imágenes con el mismo campo "images"
-    productData.images.forEach((img) => {
-      formData.append("images", img.file);
-    });
+    // Si no hay imágenes, agregar la imagen por defecto
+    if (!productData.images || productData.images.length === 0) {
+      const defaultImage = new File(
+        [await fetch('/logo2.PNG').then(r => r.blob())],
+        'logo2.PNG',
+        { type: 'image/png' }
+      );
+      formData.append("images", defaultImage);
+    } else {
+      // Agrega todas las imágenes con el mismo campo "images"
+      productData.images.forEach((img) => {
+        if (img instanceof File) {
+          formData.append("images", img);
+        } else if (img.file instanceof File) {
+          formData.append("images", img.file);
+        }
+      });
+    }
 
-    const response = await apiClient.post(
-      API_CONFIG.ENDPOINTS.PRODUCTS.CREATE,
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
-    );
-
-    return response.data;
+    try {
+      const response = await apiClient.post(
+        API_CONFIG.ENDPOINTS.PRODUCTS.CREATE,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error en productService.create:", error);
+      throw error;
+    }
   },
 
   getAll: async (filters = {}) => {
