@@ -90,7 +90,11 @@ const CreateProduct = () => {
 
       navigate("/gallery");
     } catch (error) {
-      toast.error(error.response.data.details[0].msg);
+      console.error("Error al crear/editar producto:", error);
+      const errorMessage = error.response?.data?.details?.[0]?.msg || 
+                          error.response?.data?.error || 
+                          "Error al crear el producto";
+      toast.error(errorMessage);
     } finally {
       setLoading(false);
     }

@@ -27,8 +27,10 @@ export const AuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    verifyRating();
-  }, []);
+    if (isAuthenticated) {
+      verifyRating();
+    }
+  }, [isAuthenticated]);
 
   const verifyRating = async () => {
     try {

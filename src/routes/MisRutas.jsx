@@ -1,5 +1,4 @@
 import {
-  BrowserRouter as Router,
   Routes,
   Route,
   Navigate,
@@ -25,40 +24,38 @@ function MisRutas() {
   const { isAuthenticated } = useAuth();
 
   return (
-    <Router>
-      <div className="app min-vh-100 min-vw-100 d-flex flex-column">
-        <Header />
-        <main className="flex-grow-1">
-          <div className="container-fluid px-0 general-container">
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="*" element={<NotFound />} />
-              <Route
-                path="/register"
-                element={
-                  isAuthenticated ? <Navigate to={"/profile"} /> : <Register />
-                }
-              />
-              <Route
-                path="/login"
-                element={
-                  isAuthenticated ? <Navigate to={"/profile"} /> : <Login />
-                }
-              />
-              <Route path="/gallery" element={<Gallery />} />
-              <Route path="/how-it-works" element={<HowItWorks />} />
-              <Route element={<PrivateRoute />}>
-                <Route path="/profile" element={<Profile />} />
-                <Route path="/create-product" element={<CreateProduct />} />
-                <Route path="/product/:id" element={<ProductDetail />} />
-              </Route>
-            </Routes>
-          </div>
-        </main>
-        <Footer />
-        <ToastContainer position="bottom-right" />
-      </div>
-    </Router>
+    <div className="app min-vh-100 min-vw-100 d-flex flex-column">
+      <Header />
+      <main className="flex-grow-1">
+        <div className="container-fluid px-0 general-container">
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="*" element={<NotFound />} />
+            <Route
+              path="/register"
+              element={
+                isAuthenticated ? <Navigate to={"/profile"} /> : <Register />
+              }
+            />
+            <Route
+              path="/login"
+              element={
+                isAuthenticated ? <Navigate to={"/profile"} /> : <Login />
+              }
+            />
+            <Route path="/gallery" element={<Gallery />} />
+            <Route path="/how-it-works" element={<HowItWorks />} />
+            <Route element={<PrivateRoute />}>
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/create-product" element={<CreateProduct />} />
+              <Route path="/product/:id" element={<ProductDetail />} />
+            </Route>
+          </Routes>
+        </div>
+      </main>
+      <Footer />
+      <ToastContainer position="bottom-right" />
+    </div>
   );
 }
 
